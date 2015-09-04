@@ -1,0 +1,10 @@
+{
+    "name": "c7s/lepota",
+    "type": "library",
+    "minimum-stability": "dev",
+    "require": {
+        "php": ">= 5.4.0",
+        "yiisoft/yii2": ">= 2.0.6",
+        "lstrojny/functional-php": ">= 1.0.0"
+    }
+}
