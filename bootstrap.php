@@ -12,8 +12,6 @@ if (file_exists(VENDOR_DIR . '/autoload.php')) {
 
 require(VENDOR_DIR . '/yiisoft/yii2/Yii.php');
 
-Yii::setAlias('@lepota', VENDOR_DIR . '/c7s/lepota');
-
 mb_internal_encoding("UTF-8");
 
 chdir(ROOT_DIR);
