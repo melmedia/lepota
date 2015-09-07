@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<project>
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+        <classpath>
+            <pathelement location="/usr/share/java/ant-contrib.jar"/>
+        </classpath>
+    </taskdef>
+
+    <property file="build.properties"/>
+
+    <property name="main.path" value="${basedir}/main"/>
+    <property name="main.shared.path" value="${main.path}/www/uploads"/>
+    <property name="main.runtime.path" value="${basedir}/runtime"/>
+    <property name="main.config.path" value="${main.path}/config"/>
+
+    <property name="yiic" value="${basedir}/bin/cli"/>
+    <property name="workers.service" value="${basedir}/bin/workers-service.sh"/>
+    <property name="workers.config.path" value="${basedir}"/>
+
+
+
+    <!--<target name="init-runtime" depends="create-runtime-dir, create-runtime-admin-dir"/>-->
+    <target name="init-runtime" depends="create-runtime-dir"/>
+
+    <target name="create-runtime-dir">
+        <mkdir dir="${main.runtime.path}"/>
+    </target>
+
+    <target name="set-permissions">
+        <shellscript shell="bash">
+            find ${main.shared.path} -type d -exec chmod -c 777 \{\} \;
+            find ${main.runtime.path} -type d -exec chmod -c 777 \{\} \;
+        </shellscript>
+    </target>
+
+    <target name="bin-set-permissions">
+        <chmod perm="+x" dir="${basedir}/bin" includes="*"/>
+    </target>
+
+    <target name="migrate-database" depends="bin-set-permissions">
+        <exec executable="${yiic}" dir="${basedir}" failonerror="on">
+            <arg line="migrate"/>
+            <arg line="--interactive=0"/>
+        </exec>
+    </target>
+
+    <target name="amqp-restart" depends="bin-set-permissions, amqp-init">
+        <exec executable="${yiic}" dir="${basedir}" failonerror="on">
+            <arg line="amqp clear"/>
+        </exec>
+    </target>
+
+    <target name="amqp-init" depends="bin-set-permissions">
+        <exec executable="${yiic}" dir="${basedir}" failonerror="on">
+            <arg line="amqp init"/>
+        </exec>
+    </target>
+
+    <target name="workers-start" depends="bin-set-permissions,amqp-restart">
+        <echo>Starting workers</echo>
+        <exec executable="${workers.service}" dir="${basedir}">
+            <arg line="start ${workers.config.path}"/>
+        </exec>
+        <echo>Workers started</echo>
+    </target>
+
+    <target name="workers-stop" depends="bin-set-permissions">
+        <echo>Stoping workers</echo>
+        <exec executable="${workers.service}" dir="${basedir}">
+            <arg line="stop ${workers.config.path}"/>
+        </exec>
+    </target>
+
+    <target name="workers-restart">
+        <antcall target="workers-stop"/>
+        <antcall target="workers-start"/>
+    </target>
+
+    <!--<target name="init-properties-file" depends="init-properties-file-main, init-properties-file-console, init-properties-file-admin"/>-->
+    <target name="init-properties-file" depends="init-properties-file-main"/>
+
+    <target name="init-properties-file-main">
+        <symlink action="delete" link="${main.config.path}/env/dev/properties.local.php"/>
+        <symlink link="${main.config.path}/env/dev/properties.local.php" resource="${basedir}/properties.local.php"/>
+    </target>
+
+    <target name="init-properties-file-console">
+        <symlink action="delete" link="${project.config.console.path}/env/dev/properties.local.php"/>
+        <symlink link="${project.config.console.path}/env/dev/properties.local.php" resource="${basedir}/properties.local.php"/>
+    </target>
+
+</project>
