@@ -29,7 +29,6 @@
 
     <target name="set-permissions">
         <shellscript shell="bash">
-            find ${main.shared.path} -type d -exec chmod -c 777 \{\} \;
             find ${main.runtime.path} -type d -exec chmod -c 777 \{\} \;
         </shellscript>
     </target>
