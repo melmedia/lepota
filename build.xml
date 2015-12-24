@@ -18,18 +18,35 @@
     <property name="workers.service" value="${basedir}/bin/workers-service.sh"/>
     <property name="workers.config.path" value="${basedir}"/>
 
+    <property name="frontend.path" value="${basedir}/frontend"/>
+    <property name="frontend.runtime.path" value="${basedir}/frontend/runtime"/>
+
+    <property name="backend.config.local.properties" value="${basedir}/properties.local.php"/>
 
 
-    <!--<target name="init-runtime" depends="create-runtime-dir, create-runtime-admin-dir"/>-->
-    <target name="init-runtime" depends="create-runtime-dir"/>
+    <target name="init-runtime" depends="create-runtime-dir, create-runtime-dir-admin, create-runtime-dir-frontend"/>
 
     <target name="create-runtime-dir">
         <mkdir dir="${main.runtime.path}"/>
     </target>
 
+    <target name="create-runtime-dir-admin">
+        <mkdir dir="${admin.runtime.path}"/>
+    </target>
+
+    <target name="create-runtime-dir-frontend">
+        <mkdir dir="${frontend.runtime.path}"/>
+    </target>
+
     <target name="set-permissions">
         <shellscript shell="bash">
             find ${main.runtime.path} -type d -exec chmod -c 777 \{\} \;
+        </shellscript>
+    </target>
+
+    <target name="frontend-set-permissions">
+        <shellscript shell="bash">
+            find ${frontend.runtime.path} -type d -exec chmod -c 777 \{\} \;
         </shellscript>
     </target>
 
@@ -76,17 +93,33 @@
         <antcall target="workers-start"/>
     </target>
 
-    <!--<target name="init-properties-file" depends="init-properties-file-main, init-properties-file-console, init-properties-file-admin"/>-->
-    <target name="init-properties-file" depends="init-properties-file-main"/>
+    <target name="init-properties-file" depends="init-properties-file-main, init-properties-file-console, init-properties-file-admin"/>
 
     <target name="init-properties-file-main">
         <symlink action="delete" link="${main.config.path}/env/dev/properties.local.php"/>
-        <symlink link="${main.config.path}/env/dev/properties.local.php" resource="${basedir}/properties.local.php"/>
+        <symlink link="${main.config.path}/env/dev/properties.local.php" resource="${backend.config.local.properties}"/>
     </target>
 
     <target name="init-properties-file-console">
         <symlink action="delete" link="${project.config.console.path}/env/dev/properties.local.php"/>
-        <symlink link="${project.config.console.path}/env/dev/properties.local.php" resource="${basedir}/properties.local.php"/>
+        <symlink link="${project.config.console.path}/env/dev/properties.local.php" resource="${backend.config.local.properties}"/>
+    </target>
+
+    <target name="init-properties-file-admin">
+        <symlink action="delete" link="${project.config.admin.path}/env/dev/properties.local.php"/>
+        <symlink link="${project.config.admin.path}/env/dev/properties.local.php" resource="${backend.config.local.properties}"/>
+    </target>
+
+    <target name="node-start">
+        <exec executable="forever" dir="${frontend.path}">
+            <arg line="start -p ${frontend.runtime} -l ${frontend.runtime}/node.forever.log -o ${frontend.runtime}/node.out.log -e ${frontend.runtime}/node.error.log app.js"/>
+        </exec>
+    </target>
+
+    <target name="node-stop">
+        <exec executable="${workers.service}" dir="${frontend.path}">
+            <arg line="stop app.js"/>
+        </exec>
     </target>
 
 </project>
