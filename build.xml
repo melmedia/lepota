@@ -117,7 +117,7 @@
     </target>
 
     <target name="node-stop">
-        <exec executable="${workers.service}" dir="${frontend.path}">
+        <exec executable="forever" dir="${frontend.path}">
             <arg line="stop app.js"/>
         </exec>
     </target>
