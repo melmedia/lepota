@@ -112,7 +112,7 @@
 
     <target name="node-start">
         <exec executable="forever" dir="${frontend.path}">
-            <arg line="start -p ${frontend.runtime} -l ${frontend.runtime}/node.forever.log -o ${frontend.runtime}/node.out.log -e ${frontend.runtime}/node.error.log app.js"/>
+            <arg line="start -p ${frontend.runtime.path} -l ${frontend.runtime.path}/node.forever.log -o ${frontend.runtime.path}/node.out.log -e ${frontend.runtime.path}/node.error.log app.js"/>
         </exec>
     </target>
 
