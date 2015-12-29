@@ -2,6 +2,7 @@
 namespace lepota\components\filters;
 
 use yii\base\ActionFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * Restrict actions to run only in dev environment
@@ -17,7 +18,10 @@ class DebugFilter extends ActionFilter
      */
     public function beforeAction($action)
     {
-        return defined('YII_DEBUG') && YII_DEBUG;
+        if (defined('YII_DEBUG') && YII_DEBUG) {
+            throw new NotFoundHttpException;
+        }
+        return true;
     }
 
 }
