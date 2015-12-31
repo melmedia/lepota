@@ -1,0 +1,1 @@
+Only for Yii2 components classes
