@@ -21,6 +21,7 @@
     <property name="frontend.path" value="${basedir}/frontend"/>
     <property name="frontend.runtime.path" value="${basedir}/frontend/runtime"/>
 
+    <property name="backend.path" value="${basedir}/backend"/>
     <property name="backend.config.local.properties" value="${basedir}/properties.local.php"/>
 
 
@@ -52,6 +53,14 @@
 
     <target name="bin-set-permissions">
         <chmod perm="+x" dir="${basedir}/bin" includes="*"/>
+    </target>
+
+    <target name="bin-backend-set-permissions">
+        <chmod perm="+x" dir="${backend.path}/bin" includes="*"/>
+    </target>
+
+    <target name="bin-frontend-set-permissions">
+        <chmod perm="+x" dir="${frontend.path}/node_modules/.bin" includes="*"/>
     </target>
 
     <target name="migrate-database" depends="bin-set-permissions">
