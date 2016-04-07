@@ -270,7 +270,11 @@ class ApplicationConfig
      */
     public function loadFiles($category)
     {
-        foreach (scandir($this->getCommonPath($category)) as $file) {
+        $commonPath = $this->getCommonPath($category);
+        if (!is_dir($commonPath)) {
+            return $this;
+        }
+        foreach (scandir($commonPath) as $file) {
             if ($file == '.' || $file == '..') {
                 continue;
             }
