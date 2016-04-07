@@ -1,6 +1,8 @@
 <?php
 namespace lepota\exceptions;
 
+use yii\web\HttpException;
+
 /**
  * Render error for AJAX
  *
@@ -11,13 +13,18 @@ namespace lepota\exceptions;
  * {errors: [{code: errorCode, message: errorMessage}]}
  * errorCode is formatted from exception class name (ProjectAccessDeniedException => projectAccessDenied)
  *
- * @see MainController::renderException
+ * @see Controller::renderException
  */
-class AjaxException extends \Exception
+class AjaxException extends HttpException
 {
 
+    public function __construct()
+    {
+        parent::__construct($this->getHttpResponseCode(), $this->getAjaxMessage());
+    }
+
     /**
-     * Текст для пользователя, описывающий ошибку (пропущенный через Yii::t)
+     * Error message for user
      * @return string
      */
     public function getDefaultMessage()
@@ -26,9 +33,7 @@ class AjaxException extends \Exception
     }
 
     /**
-     * HTTP-код ответа, отправляемый клиенту при выбрасывании этой ошибки.
-     * Есть заготовленные подклассы Forbidden, NotFound и Unauthorized с соответствующими HTTP-кодами
-     *
+     * HTTP response code to return to client
      * @return int
      */
     public function getHttpResponseCode()
@@ -37,7 +42,7 @@ class AjaxException extends \Exception
     }
 
     /**
-     * @param null $message
+     * @param string|null $message
      * @return array
      */
     public function getAjaxResponse($message = null)
@@ -51,19 +56,19 @@ class AjaxException extends \Exception
     }
 
     /**
-     * Получаем из имени класса код ошибки
-     * Например: ProjectAccessDeniedError => projectAccessDenied
+     * Get error code from class name
+     * Example: ProjectAccessDeniedError => projectAccessDenied
      * @return string
      */
     protected function getAjaxErrorCode()
     {
         $errorCode = (new \ReflectionClass($this))->getShortName();
-        return lcfirst(preg_replace('/Exception$/', '', $errorCode));
+        return preg_replace('/Exception$/', '', $errorCode);
     }
 
     /**
-     * Получаем сообщение
-     * @param null $message
+     * Get error message
+     * @param string|null $message
      * @return mixed
      */
     protected function getAjaxMessage($message = null)
