@@ -10,7 +10,7 @@ class EntityValidationException extends AjaxException
 {
     /** @var Model|null */
     protected $model;
-    /** @var array Ошибки валидации модели */
+    /** @var array Attributes validation errors */
     protected $modelErrors;
 
     /**

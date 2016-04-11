@@ -2,7 +2,8 @@
 namespace lepota\exceptions;
 
 /**
- * General model storage error
+ * General model storage error.
+ * Error code may be 'EntityStorage' or 'AlreadyExists' if duplicateKey is true
  */
 class EntityStorageException extends AjaxException
 {
@@ -25,4 +26,12 @@ class EntityStorageException extends AjaxException
         return 500;
     }
 
+    protected function getAjaxErrorCode()
+    {
+        if ($this->duplicateKey) {
+            return 'AlreadyExists';
+        }
+        return parent::getAjaxErrorCode();
+    }
+    
 }

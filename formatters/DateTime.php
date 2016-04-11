@@ -15,5 +15,18 @@ class DateTime
         return date(self::DATE_TIME_SQL);
     }
 
-}
+    /**
+     * Cut time from datetime string, return only date part
+     * @param string $dateTime
+     * @return string
+     */
+    public static function onlyDate($dateTime)
+    {
+        $parts = explode(' ', $dateTime);
+        if (!$parts) {
+            return $dateTime;
+        }
+        return $parts[0];
+    }
 
+}
