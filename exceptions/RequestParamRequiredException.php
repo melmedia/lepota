@@ -13,7 +13,7 @@ class RequestParamRequiredException extends AjaxException
 
     public function getDefaultMessage()
     {
-        return \Yii::t('lepota', 'Request parameter {param} is required', ['{param}' => $this->paramName]);
+        return \Yii::t('app', 'Request parameter {param} is required', ['param' => $this->paramName]);
     }
 
 }
