@@ -35,4 +35,23 @@ class ServiceWrapper
         return json_decode($this->http->get($url, ['query' => $query])->getBody(), true);
     }
 
+    /**
+     * @param string $url
+     * @param array $body
+     * @return mixed
+     */
+    public function post($url, $body)
+    {
+        return json_decode($this->http->post($url, ['json' => $body])->getBody(), true);
+    }
+
+    /**
+     * @param string $url
+     * @return mixed
+     */
+    public function delete($url)
+    {
+        return json_decode($this->http->delete($url)->getBody(), true);
+    }
+
 }
