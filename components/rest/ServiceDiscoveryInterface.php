@@ -1,5 +1,5 @@
 <?php
-namespace lepota\rest;
+namespace lepota\components\rest;
 
 /**
  * Get location for service name
