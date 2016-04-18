@@ -16,7 +16,7 @@ class ServiceWrapper extends Component
     /** @var Client */
     protected $http;
 
-    
+
     public function init()
     {
         $serviceUrl = Yii::$app->serviceDiscovery->getLocation($this->serviceName);
@@ -24,7 +24,7 @@ class ServiceWrapper extends Component
             throw new Exception("Can't find service location for $this->serviceName");
         }
         $this->http = new Client([
-            'base_uri' => "http://$serviceUrl/$this->version/"
+            'base_uri' => "http://$serviceUrl/v$this->version/"
         ]);
     }
 
@@ -33,7 +33,7 @@ class ServiceWrapper extends Component
      * @param array $query
      * @return mixed
      */
-    public function get($url, $query)
+    public function get($url, $query = [])
     {
         return json_decode($this->http->get($url, ['query' => $query])->getBody());
     }
@@ -43,7 +43,7 @@ class ServiceWrapper extends Component
      * @param array $body
      * @return mixed
      */
-    public function post($url, $body)
+    public function post($url, $body = [])
     {
         return json_decode($this->http->post($url, ['json' => $body])->getBody());
     }
