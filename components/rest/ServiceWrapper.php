@@ -3,8 +3,8 @@ namespace lepota\components\rest;
 
 use Exception;
 use GuzzleHttp\Client;
-use yii\base\Component;
 use Yii;
+use yii\base\Component;
 
 class ServiceWrapper extends Component
 {
@@ -42,10 +42,15 @@ class ServiceWrapper extends Component
      * @param string $url
      * @param array $body
      * @return mixed
+     * @throws Exception
      */
     public function post($url, $body = [])
     {
-        return json_decode($this->http->post($url, ['json' => $body])->getBody());
+        $response = $this->http->post($url, ['json' => $body]);
+        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
+            throw new Exception("Status code is not good " . $response->getStatusCode());
+        }
+        return json_decode($response->getBody());
     }
 
     /**
