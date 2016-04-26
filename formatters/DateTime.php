@@ -3,7 +3,7 @@ namespace lepota\formatters;
 
 class DateTime
 {
-    const DATE_TIME_SQL = 'Y-m-d H:i:s';
+    const DATE_TIME_SQL = 'Y-m-d H:i:sO';
     const DATE_SQL = 'Y-m-d';
     
     /**

@@ -3,6 +3,7 @@ namespace lepota\domain;
 
 use ArrayObject;
 use yii\base\InvalidConfigException;
+use yii\base\UnknownPropertyException;
 use yii\validators\Validator;
 
 /**
@@ -17,72 +18,17 @@ abstract class Value
     protected $errors;
 
     /**
-     * Returns the validation rules for attributes.
-     *
-     * Validation rules are used by [[validate()]] to check if attribute values are valid.
-     * Child classes may override this method to declare different validation rules.
-     *
-     * Each rule is an array with the following structure:
-     *
-     * ```php
-     * [
-     *     ['attribute1', 'attribute2'],
-     *     'validator type',
-     *     'on' => ['scenario1', 'scenario2'],
-     *     //...other parameters...
-     * ]
-     * ```
-     *
-     * where
-     *
-     *  - attribute list: required, specifies the attributes array to be validated, for single attribute you can pass a string;
-     *  - validator type: required, specifies the validator to be used. It can be a built-in validator name,
-     *    a method name of the model class, an anonymous function, or a validator class name.
-     *  - on: optional, specifies the [[scenario|scenarios]] array in which the validation
-     *    rule can be applied. If this option is not set, the rule will apply to all scenarios.
-     *  - additional name-value pairs can be specified to initialize the corresponding validator properties.
-     *    Please refer to individual validator class API for possible properties.
-     *
-     * A validator can be either an object of a class extending [[Validator]], or a model class method
-     * (called *inline validator*) that has the following signature:
-     *
-     * ```php
-     * // $params refers to validation parameters given in the rule
-     * function validatorName($attribute, $params)
-     * ```
-     *
-     * In the above `$attribute` refers to the attribute currently being validated while `$params` contains an array of
-     * validator configuration options such as `max` in case of `string` validator. The value of the attribute currently being validated
-     * can be accessed as `$this->$attribute`. Note the `$` before `attribute`; this is taking the value of the variable
-     * `$attribute` and using it as the name of the property to access.
-     *
-     * Yii also provides a set of [[Validator::builtInValidators|built-in validators]].
-     * Each one has an alias name which can be used when specifying a validation rule.
-     *
-     * Below are some examples:
-     *
-     * ```php
-     * [
-     *     // built-in "required" validator
-     *     [['username', 'password'], 'required'],
-     *     // built-in "string" validator customized with "min" and "max" properties
-     *     ['username', 'string', 'min' => 3, 'max' => 12],
-     *     // built-in "compare" validator that is used in "register" scenario only
-     *     ['password', 'compare', 'compareAttribute' => 'password2', 'on' => 'register'],
-     *     // an inline validator defined via the "authenticate()" method in the model class
-     *     ['password', 'authenticate', 'on' => 'login'],
-     *     // a validator of class "DateRangeValidator"
-     *     ['dateRange', 'DateRangeValidator'],
-     * ];
-     * ```
-     *
-     * Note, in order to inherit rules defined in the parent class, a child class needs to
-     * merge the parent rules with child rules using functions such as `array_merge()`.
-     *
+     * @see yii\base\Model::rules()
      * @return array validation rules
-     * @see scenarios()
      */
     abstract public function rules();
+
+    /**
+     * Check if value object is empty (used by lepota\domain\validators\ValueRequiredValidator)
+     * @return bool
+     */
+    abstract public function isEmpty();
+
 
     /**
      * Adds a new error to the specified attribute.
@@ -222,6 +168,40 @@ abstract class Value
             }
         }
         return $validators;
+    }
+
+    /**
+     * Used in yii\validators\Validator
+     * @param string $name the property name
+     * @return boolean whether the property is defined
+     */
+    public function hasMethod($name)
+    {
+        return method_exists($this, $name);
+    }
+
+    /**
+     * Returns the value of a component property.
+     * This method will check in the following order and act accordingly:
+     *
+     *  - a property defined by a getter: return the getter result
+     *  - a property of a behavior: return the behavior property value
+     *
+     * Do not call this method directly as it is a PHP magic method that
+     * will be implicitly called when executing `$value = $component->property;`.
+     * @param string $name the property name
+     * @return mixed the property value or the value of a behavior's property
+     * @throws UnknownPropertyException if the property is not defined
+     * @see __set()
+     */
+    public function __get($name)
+    {
+        $getter = 'get' . $name;
+        if (method_exists($this, $getter)) {
+            // read property, e.g. getName()
+            return $this->$getter();
+        }
+        throw new UnknownPropertyException('Getting unknown property: ' . __CLASS__ . '::' . $name);
     }
 
 }

@@ -33,5 +33,5 @@ class EntityStorageException extends AjaxException
         }
         return parent::getAjaxErrorCode();
     }
-    
+
 }
