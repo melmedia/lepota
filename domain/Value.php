@@ -29,7 +29,28 @@ abstract class Value
      */
     abstract public function isEmpty();
 
-
+    /**
+     * Returns the attribute labels.
+     *
+     * Attribute labels are mainly used for display purpose. For example, given an attribute
+     * `firstName`, we can declare a label `First Name` which is more user-friendly and can
+     * be displayed to end users.
+     *
+     * By default an attribute label is generated using [[generateAttributeLabel()]].
+     * This method allows you to explicitly specify attribute labels.
+     *
+     * Note, in order to inherit labels defined in the parent class, a child class needs to
+     * merge the parent labels with child labels using functions such as `array_merge()`.
+     *
+     * @return array attribute labels (name => label)
+     * @see generateAttributeLabel()
+     */
+    public function attributeLabels()
+    {
+        return [];
+    }
+    
+    
     /**
      * Adds a new error to the specified attribute.
      * @param string $attribute attribute name
@@ -178,6 +199,19 @@ abstract class Value
     public function hasMethod($name)
     {
         return method_exists($this, $name);
+    }
+
+    /**
+     * Returns the text label for the specified attribute.
+     * @param string $attribute the attribute name
+     * @return string the attribute label
+     * @see generateAttributeLabel()
+     * @see attributeLabels()
+     */
+    public function getAttributeLabel($attribute)
+    {
+        $labels = $this->attributeLabels();
+        return isset($labels[$attribute]) ? $labels[$attribute] : $attribute;
     }
 
     /**
