@@ -9,14 +9,19 @@ use yii\base\Component;
  */
 class JsonServiceDiscovery extends Component implements ServiceDiscoveryInterface
 {
-    /** @var string $configFile Full path to JSON config file */
+    /** @var string|string[] $configFile Full path to JSON config file */
     public $configFile;
 
     protected $config;
 
     public function init()
     {
-        $this->config = json_decode(file_get_contents($this->configFile), true);
+        foreach ((array) $this->configFile as $configFile) {
+            if (is_file($configFile)) {
+                $this->config = json_decode(file_get_contents($this->configFile), true);
+                break;
+            }
+        }
         if (!$this->config) {
             throw new Exception("Can't initialize configuration from JSON file $this->configFile");
         }
