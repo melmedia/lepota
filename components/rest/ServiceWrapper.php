@@ -24,7 +24,7 @@ class ServiceWrapper extends Component
             throw new Exception("Can't find service location for $this->serviceName");
         }
         $this->http = new Client([
-            'base_uri' => "$serviceUrl/v$this->version/"
+            'base_uri' => $this->version ? "$serviceUrl/v$this->version/" : $serviceUrl
         ]);
     }
 
