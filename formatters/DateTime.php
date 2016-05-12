@@ -39,4 +39,13 @@ class DateTime
         return str_replace(' ', 'T', $dateTime) . ':00';
     }
 
+    /**
+     * Convert AJAX datetime format to SQL format: "2016-01-30 14:55+03"
+     * @return string
+     */
+    public static function ajaxToSql($dateTime)
+    {
+        return str_replace('T', ' ', $dateTime);
+    }
+
 }

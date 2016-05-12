@@ -18,12 +18,12 @@ class JsonServiceDiscovery extends Component implements ServiceDiscoveryInterfac
     {
         foreach ((array) $this->configFile as $configFile) {
             if (is_file($configFile)) {
-                $this->config = json_decode(file_get_contents($this->configFile), true);
+                $this->config = json_decode(file_get_contents($configFile), true);
                 break;
             }
         }
         if (!$this->config) {
-            throw new Exception("Can't initialize configuration from JSON file $this->configFile");
+            throw new Exception("Can't initialize configuration from JSON file");
         }
     }
 
