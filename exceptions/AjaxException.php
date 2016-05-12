@@ -18,6 +18,9 @@ use yii\web\HttpException;
 class AjaxException extends HttpException
 {
 
+    /**
+     * @param string|null $message Translated message
+     */
     public function __construct($message = null)
     {
         parent::__construct($this->getHttpResponseCode(), $this->getAjaxMessage($message));
