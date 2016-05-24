@@ -14,7 +14,7 @@ namespace lepota\domain;
  */
 trait NestedErrorsTrait
 {
-    protected $nestedErrors;
+    protected $nestedErrors = [];
 
     /**
      * Adds a new error to the specified nested object
