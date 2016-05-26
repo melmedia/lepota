@@ -28,6 +28,9 @@ class EntityStorageException extends AjaxException
 
     public function getHttpResponseCode()
     {
+        if ($this->duplicateKey) {
+            return 400;
+        }
         return 500;
     }
 
