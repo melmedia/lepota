@@ -17,13 +17,13 @@ class EntityStorageException extends AjaxException
      */
     public function __construct($dbException = null, $message = null)
     {
-        parent::__construct($message);
         if ($dbException instanceof \yii\db\Exception) {
             if ('23505' == $dbException->getCode()) {
                 // SQLSTATE[23505]: Unique violation: ERROR: duplicate key value violates unique constraint
                 $this->duplicateKey = true;
             }
         }
+        parent::__construct($message);
     }
 
     public function getHttpResponseCode()
