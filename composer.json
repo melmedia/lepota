@@ -3,7 +3,6 @@
     "type": "library",
     "minimum-stability": "dev",
     "require": {
-        "php": ">= 7.0.7",
         "yiisoft/yii2": "2.0.8",
         "lstrojny/functional-php": "1.0.2"
     },
