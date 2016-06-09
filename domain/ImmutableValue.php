@@ -9,7 +9,7 @@ use yii\validators\Validator;
 /**
  * Immutable value. Can be validated
  */
-abstract class Value
+abstract class ImmutableValue
 {
     /** @var ArrayObject list of validators */
     protected $validators;
@@ -226,7 +226,6 @@ abstract class Value
      * @param string $name the property name
      * @return mixed the property value or the value of a behavior's property
      * @throws UnknownPropertyException if the property is not defined
-     * @see __set()
      */
     public function __get($name)
     {
