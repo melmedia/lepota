@@ -11,16 +11,38 @@ abstract class ImmutableObject extends ImmutableValue
     protected $id;
     protected $object;
 
+    /**
+     * @return static
+     */
     public static function createEmpty()
     {
         return new static(null);
     }
 
+    /**
+     * @param array $attributes
+     * @return static
+     */
     public static function createFromArray($attributes)
     {
         return new static($attributes['id']);
     }
 
+    /**
+     * @param \stdClass $object
+     * @return static
+     */
+    public static function createFromObject($object)
+    {
+        $result = new static($object->id);
+        $result->object = $object;
+        return $result;
+    }
+
+    /**
+     * @param mixed $id
+     * @return static
+     */
     public static function createFromId($id)
     {
         return new static($id);
