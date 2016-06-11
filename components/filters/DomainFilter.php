@@ -2,10 +2,8 @@
 namespace lepota\components\filters;
 
 use Yii;
-use yii\base\ActionEvent;
-use yii\base\Behavior;
-use yii\web\Controller;
-use yii\web\ForbiddenHttpException;
+use yii\base\{ActionEvent, Behavior};
+use yii\web\{Controller, ForbiddenHttpException};
 
 class DomainFilter extends Behavior
 {

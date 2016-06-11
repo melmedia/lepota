@@ -2,8 +2,7 @@
 namespace lepota\domain;
 
 use ArrayObject;
-use yii\base\InvalidConfigException;
-use yii\base\UnknownPropertyException;
+use yii\base\{InvalidConfigException, UnknownPropertyException};
 use yii\validators\Validator;
 
 /**
