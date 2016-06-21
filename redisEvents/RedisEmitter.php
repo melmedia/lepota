@@ -34,8 +34,8 @@ class RedisEmitter extends Emitter implements Configurable
      */
     public function receive($redis, $channel, $message)
     {
-        $message = json_decode($message);
         var_dump($message);
+        $message = json_decode($message);
         $this->invokeListeners($channel, $message['event'], $message['arguments']);
     }
 
