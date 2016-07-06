@@ -8,7 +8,10 @@ namespace lepota\exceptions;
 class EntityStorageException extends AjaxException
 {
     /** @var bool Can be used for special handing of duplicate key error */
-    public $duplicateKey = false;
+    public $isDuplicatedKey = false;
+
+    /** @var string Name of violated constraint */
+    public $constraint;
 
     /**
      * EntityStorageException constructor.
@@ -18,9 +21,15 @@ class EntityStorageException extends AjaxException
     public function __construct($dbException = null, $message = null)
     {
         if ($dbException instanceof \yii\db\Exception) {
-            if ('23505' == $dbException->getCode()) {
+            if ('23505' == $dbException->errorInfo[0]) {
                 // SQLSTATE[23505]: Unique violation: ERROR: duplicate key value violates unique constraint
-                $this->duplicateKey = true;
+                $this->isDuplicatedKey = true;
+                if (isset($dbException->errorInfo[2])) {
+                    preg_match('~constraint "([^"]+)"~', $dbException->errorInfo[2], $matches);
+                    if (isset($matches[1])) {
+                        $this->constraint = $matches[1];
+                    }
+                }
             }
         }
         parent::__construct($message);
@@ -28,7 +37,7 @@ class EntityStorageException extends AjaxException
 
     public function getHttpResponseCode()
     {
-        if ($this->duplicateKey) {
+        if ($this->isDuplicatedKey) {
             return 400;
         }
         return 500;
@@ -36,7 +45,7 @@ class EntityStorageException extends AjaxException
 
     protected function getAjaxErrorCode()
     {
-        if ($this->duplicateKey) {
+        if ($this->isDuplicatedKey) {
             return 'AlreadyExists';
         }
         return parent::getAjaxErrorCode();
