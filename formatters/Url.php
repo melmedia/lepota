@@ -13,7 +13,7 @@ class Url
     public static function fromText($text, $charset)
     {
         return mb_strtolower(
-            str_replace(' ', '_', Transliteration::ru2Lat($text)),
+            str_replace(' ', '_', Transliteration::ru2Lat(trim($text))),
             $charset
         );
     }

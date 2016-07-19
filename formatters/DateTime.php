@@ -31,7 +31,7 @@ class DateTime
     }
 
     /**
-     * Convert SQL datetime format to AJAX format: "2016-01-30T14:55+03:00" (ISO-8601)
+     * Convert SQL datetime format to AJAX format: "2016-01-30T14:55:00+03:00" (ISO-8601)
      * @return string
      */
     public static function sqlToAjax($dateTime)
@@ -40,7 +40,7 @@ class DateTime
     }
 
     /**
-     * Convert AJAX datetime format to SQL format: "2016-01-30 14:55+03"
+     * Convert AJAX datetime format to SQL format: "2016-01-30 14:55:00+03"
      * @return string
      */
     public static function ajaxToSql($dateTime)
