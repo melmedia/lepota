@@ -12,9 +12,16 @@ class Url
      */
     public static function fromText($text, $charset)
     {
-        return mb_strtolower(
-            str_replace(' ', '_', Transliteration::ru2Lat(trim($text))),
-            $charset
+        return
+            preg_replace('~[^a-z0-9_-]~', '',
+                mb_strtolower(
+                str_replace(' ', '_',
+                    Transliteration::ru2Lat(
+                        trim($text)
+                    )
+                ),
+                $charset
+            )
         );
     }
 
