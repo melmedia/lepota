@@ -9,11 +9,12 @@ class DateTime
 
     /**
      * Get date+time formatted for PostgreSQL timestamptz
+     * @param int|null $timestamp
      * @return string
      */
-    public static function dateTimeSql()
+    public static function dateTimeSql(int $timestamp = null): string
     {
-        return date(self::DATE_TIME_SQL);
+        return date(self::DATE_TIME_SQL, $timestamp);
     }
 
     /**
