@@ -14,7 +14,7 @@ class DateTime
      */
     public static function dateTimeSql(int $timestamp = null): string
     {
-        return date(self::DATE_TIME_SQL, $timestamp);
+        return $timestamp ? date(self::DATE_TIME_SQL, $timestamp) : date(self::DATE_TIME_SQL);
     }
 
     /**
