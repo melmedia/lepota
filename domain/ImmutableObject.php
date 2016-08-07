@@ -82,6 +82,15 @@ abstract class ImmutableObject extends ImmutableValue
         return $this->getObject()->$attribute;
     }
 
+    public function __isset($attribute)
+    {
+        $getter = 'get' . $attribute;
+        if (method_exists($this, $getter)) {
+            return null !== $this->$getter();
+        }
+        return isset($this->getObject()->$attribute);
+    }
+
     protected function getObject()
     {
         if (null === $this->object) {
