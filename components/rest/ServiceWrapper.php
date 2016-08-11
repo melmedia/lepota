@@ -3,6 +3,7 @@ namespace lepota\components\rest;
 
 use Exception;
 use GuzzleHttp\Client;
+use Psr\Http\Message\ResponseInterface;
 use Yii;
 use yii\base\Component;
 
@@ -35,7 +36,7 @@ class ServiceWrapper extends Component
      */
     public function get($url, $query = [])
     {
-        return json_decode($this->http->get($url, ['query' => $query])->getBody());
+        return $this->json($this->http->get($url, ['query' => $query]));
     }
 
     /**
@@ -46,11 +47,7 @@ class ServiceWrapper extends Component
      */
     public function post($url, $body = [])
     {
-        $response = $this->http->post($url, ['json' => $body]);
-        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
-            throw new Exception("Status code is not good " . $response->getStatusCode());
-        }
-        return json_decode($response->getBody());
+        return $this->json($this->http->post($url, ['json' => $body]));
     }
 
     /**
@@ -59,7 +56,15 @@ class ServiceWrapper extends Component
      */
     public function delete($url)
     {
-        return json_decode($this->http->delete($url)->getBody());
+        return $this->json($this->http->delete($url));
+    }
+
+    protected function json(ResponseInterface $response)
+    {
+        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
+            throw new Exception("Status code is not good " . $response->getStatusCode());
+        }
+        return json_decode($response->getBody());
     }
 
 }
