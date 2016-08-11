@@ -16,7 +16,6 @@ class ServiceWrapper extends Component
 
     /** @var Client */
     protected $http;
-    protected $baseUri;
 
 
     public function init()
@@ -28,7 +27,6 @@ class ServiceWrapper extends Component
         $this->http = new Client([
             'base_uri' => $this->version ? "$serviceUrl/v$this->version/" : $serviceUrl
         ]);
-        $this->baseUri = $this->version ? "$serviceUrl/v$this->version/" : $serviceUrl;
     }
 
     /**
@@ -38,8 +36,7 @@ class ServiceWrapper extends Component
      */
     public function get($url, $query = [])
     {
-        $query = http_build_query($query);
-        return json_decode(file_get_contents($this->baseUri . '/' . $url . ($query ? '?' . $query : '')));
+        return $this->json($this->http->get($url, ['query' => $query]));
     }
 
     /**
