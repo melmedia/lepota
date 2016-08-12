@@ -15,14 +15,14 @@ class Url
         return
             preg_replace('~[^a-z0-9_-]~', '',
                 mb_strtolower(
-                str_replace(' ', '_',
-                    Transliteration::ru2Lat(
-                        trim($text)
-                    )
-                ),
-                $charset
-            )
-        );
+                    str_replace(' ', '-',
+                        Transliteration::ru2Lat(
+                            trim($text)
+                        )
+                    ),
+                    $charset
+                )
+            );
     }
 
 }
