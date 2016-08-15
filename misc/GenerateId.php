@@ -16,6 +16,11 @@ class GenerateId
         return self::randomSymbols(self::LETTERS, $length);
     }
 
+    public static function digits($length)
+    {
+        return self::randomSymbols(self::DIGITS, $length);
+    }
+
     public static function lettersAndNumbers($length)
     {
         return self::randomSymbols(self::LETTERS . self::DIGITS, $length);
