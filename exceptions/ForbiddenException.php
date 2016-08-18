@@ -8,7 +8,7 @@ namespace lepota\exceptions;
 class ForbiddenException extends AjaxException
 {
 
-    public function getHttpResponseCode()
+    public function getHttpResponseCode(): int
     {
         return 403;
     }

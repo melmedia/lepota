@@ -4,7 +4,7 @@ namespace lepota\exceptions;
 class UnauthorizedException extends AjaxException
 {
 
-    public function getHttpResponseCode()
+    public function getHttpResponseCode(): int
     {
         return 401;
     }

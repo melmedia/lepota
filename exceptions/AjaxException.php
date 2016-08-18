@@ -39,7 +39,7 @@ class AjaxException extends HttpException
      * HTTP response code to return to client
      * @return int
      */
-    public function getHttpResponseCode()
+    public function getHttpResponseCode(): int
     {
         return 400;
     }
