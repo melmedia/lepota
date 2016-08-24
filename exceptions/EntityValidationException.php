@@ -73,6 +73,11 @@ class EntityValidationException extends AjaxException
         return new self($errors);
     }
 
+    public function getHttpResponseCode(): int
+    {
+        return 422;
+    }
+
     public function getAjaxResponse($message = null)
     {
         return [

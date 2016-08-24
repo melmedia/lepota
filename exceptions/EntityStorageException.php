@@ -35,7 +35,7 @@ class EntityStorageException extends AjaxException
         parent::__construct($message);
     }
 
-    public function getHttpResponseCode()
+    public function getHttpResponseCode(): int
     {
         if ($this->isDuplicatedKey) {
             return 400;

@@ -7,7 +7,7 @@ namespace lepota\exceptions;
 class ConflictException extends AjaxException
 {
 
-    public function getHttpResponseCode()
+    public function getHttpResponseCode(): int
     {
         return 409;
     }
