@@ -7,13 +7,25 @@ namespace lepota\misc;
 class GenerateId
 {
     /** Letters to generate ID from */
-    const LETTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const LOWER_LETTERS = "abcdefghijklmnopqrstuvwxyz";
+    /** Letters to generate ID from */
+    const CAPITAL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     /** Letters to generate ID from */
     const DIGITS = "1234567890";
 
     public static function letters($length)
     {
-        return self::randomSymbols(self::LETTERS, $length);
+        return self::randomSymbols(self::LOWER_LETTERS . self::CAPITAL_LETTERS, $length);
+    }
+
+    public static function lowerLetters($length)
+    {
+        return self::randomSymbols(self::LOWER_LETTERS, $length);
+    }
+
+    public static function capitalLetters($length)
+    {
+        return self::randomSymbols(self::CAPITAL_LETTERS, $length);
     }
 
     public static function digits($length)
@@ -23,7 +35,7 @@ class GenerateId
 
     public static function lettersAndNumbers($length)
     {
-        return self::randomSymbols(self::LETTERS . self::DIGITS, $length);
+        return self::randomSymbols(self::LOWER_LETTERS . self::CAPITAL_LETTERS . self::DIGITS, $length);
     }
 
     protected static function randomSymbols($symbols, $length)
