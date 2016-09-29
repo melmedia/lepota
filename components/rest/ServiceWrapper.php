@@ -2,8 +2,6 @@
 namespace lepota\components\rest;
 
 use Exception;
-use GuzzleHttp\Client;
-use Psr\Http\Message\ResponseInterface;
 use Yii;
 use yii\base\Component;
 
@@ -14,8 +12,8 @@ class ServiceWrapper extends Component
     /** @var string */
     public $version;
 
-    /** @var Client */
-    protected $http;
+    /** @var \lepota\rest\Client */
+    protected $restClient;
 
 
     public function init()
@@ -24,8 +22,8 @@ class ServiceWrapper extends Component
         if (!$serviceUrl) {
             throw new Exception("Can't find service location for $this->serviceName");
         }
-        $this->http = new Client([
-            'base_uri' => $this->version ? "$serviceUrl/v$this->version/" : $serviceUrl
+        $this->restClient = new \lepota\rest\Client([
+            'base_uri' => $this->version ? "$serviceUrl/v$this->version/" : $serviceUrl,
         ]);
     }
 
@@ -36,7 +34,7 @@ class ServiceWrapper extends Component
      */
     public function get($url, $query = [])
     {
-        return $this->json($this->http->get($url, ['query' => $query]));
+        return $this->restClient->get($url, $query);
     }
 
     /**
@@ -47,7 +45,7 @@ class ServiceWrapper extends Component
      */
     public function post($url, $body = [])
     {
-        return $this->json($this->http->post($url, ['json' => $body]));
+        return $this->restClient->post($url, $body);
     }
 
     /**
@@ -56,15 +54,7 @@ class ServiceWrapper extends Component
      */
     public function delete($url)
     {
-        return $this->json($this->http->delete($url));
-    }
-
-    protected function json(ResponseInterface $response)
-    {
-        if (!($response->getStatusCode() >= 200 && $response->getStatusCode() < 300)) {
-            throw new Exception("Status code is not good " . $response->getStatusCode());
-        }
-        return json_decode($response->getBody());
+        return $this->restClient->delete($url);
     }
 
 }
