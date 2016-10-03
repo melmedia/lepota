@@ -2,8 +2,6 @@
 namespace lepota\rest;
 
 use Functional;
-use Yii;
-use yii\helpers\Url;
 
 /**
  * List splits into pages by value of ordering attribute.
@@ -24,22 +22,15 @@ class OrderPagination extends Pagination
         $this->orderingValue = $ordering[$this->orderingAttributeName];
     }
 
-    public function data()
+    public function getData(int $limit): array
     {
-        $data = call_user_func($this->dataCallback, $this->limit + 1, $this->orderingValue);
+        return call_user_func($this->dataCallback, $limit, $this->orderingValue);
+    }
 
-        $isHaveNextPage = ($data && count($data) > $this->limit);
-        $data = array_slice($data, 0, $this->limit);
-
-        if ($isHaveNextPage) {
-            $nextOrderingValue = Functional\last($data)->{$this->orderingAttributeName};
-            Yii::$app->response->setLinkHeader(
-                Url::current(['after' . ucfirst($this->orderingAttributeName) => $nextOrderingValue]),
-                'next'
-            );
-        }
-
-        return $data;
+    protected function getNextPageParams(array $data): array
+    {
+        $nextOrderingValue = Functional\last($data)->{$this->orderingAttributeName};
+        return ['after' . ucfirst($this->orderingAttributeName) => $nextOrderingValue];
     }
 
 }

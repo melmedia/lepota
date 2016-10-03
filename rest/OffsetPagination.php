@@ -1,9 +1,6 @@
 <?php
 namespace lepota\rest;
 
-use Yii;
-use yii\helpers\Url;
-
 /**
  * List splits into pages by numeric offset.
  *
@@ -21,21 +18,14 @@ class OffsetPagination extends Pagination
         $this->offset = $offset;
     }
 
-    public function data()
+    public function getData(int $limit): array
     {
-        $data = call_user_func($this->dataCallback, $this->limit + 1, $this->offset);
+        return call_user_func($this->dataCallback, $limit, $this->offset);
+    }
 
-        $isHaveNextPage = ($data && count($data) > $this->limit);
-        $data = array_slice($data, 0, $this->limit);
-
-        if ($isHaveNextPage) {
-            Yii::$app->response->setLinkHeader(
-                Url::current(['offset' => $this->offset + $this->limit]),
-                'next'
-            );
-        }
-
-        return $data;
+    protected function getNextPageParams(array $data): array
+    {
+        return ['offset' => $this->offset + $this->limit];
     }
 
 }

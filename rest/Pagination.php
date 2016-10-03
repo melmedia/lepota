@@ -1,6 +1,9 @@
 <?php
 namespace lepota\rest;
 
+use Yii;
+use yii\helpers\Url;
+
 abstract class Pagination
 {
     /** @var callable */
@@ -34,6 +37,26 @@ abstract class Pagination
     public static function order(int $limit, array $ordering, callable $dataCallback)
     {
         return (new OrderPagination($limit, $ordering, $dataCallback))->data();
+    }
+
+    abstract protected function getData(int $limit): array;
+    abstract protected function getNextPageParams(array $data): array;
+
+    protected function data()
+    {
+        $data = $this->getData($this->limit + 1);
+
+        $isHaveNextPage = ($data && count($data) > $this->limit);
+        $data = array_slice($data, 0, $this->limit);
+
+        if ($isHaveNextPage) {
+            Yii::$app->response->setLinkHeader(
+                Url::current($this->getNextPageParams($data)),
+                'next'
+            );
+        }
+
+        return $data;
     }
 
 }
