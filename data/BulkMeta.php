@@ -22,9 +22,9 @@ class BulkMeta
         $this->idAttr = $idAttr;
     }
 
-    public function meta($id): stdClass
+    public function meta($item): stdClass
     {
-        return $this->meta[$id];
+        return $this->meta[$this->itemId($item)];
     }
 
     public function filterAttr(array $mapping): self
