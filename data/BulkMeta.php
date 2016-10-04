@@ -9,7 +9,7 @@ class BulkMeta
     /** @var array */
     protected $collection;
     /** @var array */
-    protected $meta;
+    protected $meta = [];
     /** @var string|string[] */
     protected $idAttr;
     /** @var array Modified temporary collection after call of filterAttr */
