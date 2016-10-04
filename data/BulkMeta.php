@@ -24,7 +24,7 @@ class BulkMeta
 
     public function meta($item): stdClass
     {
-        return $this->meta[$this->itemId($item)];
+        return $this->meta[$this->itemId($item)] ?? new stdClass;
     }
 
     public function filterAttr(array $mapping): self
@@ -34,45 +34,70 @@ class BulkMeta
         if (!is_array($filterValues)) {
             $filterValues = (array) $filterValues;
         }
-        $this->collectionState = \Functional\filter($this->collectionState, function ($item) use ($attributeName, $filterValues): bool {
+        $this->collectionState = Functional\filter($this->collectionState, function ($item) use ($attributeName, $filterValues): bool {
             return in_array($item->$attributeName, $filterValues);
         });
         return $this;
     }
 
     /**
-     * @param array $mapping Map [from attribute => to attribute]
+     * @param array $mapping Map [from attribute => to attribute] or [function ($item): string, to attribute]
      * @param callable $bulkCallback function (array $fromAttributeValues): array
-     * @param string $indexAttribute what attribute of resulted array mapped to fromAttribute
+     * @param string|string[] $indexAttribute what attribute of resulted array mapped to fromAttribute
      * @return self
      */
-    public function bulkMap(array $mapping, callable $bulkCallback, string $indexAttribute = 'id'): self
+    public function bulkMap(array $mapping, callable $bulkCallback, $indexAttribute = 'id'): self
     {
-        $fromAttribute = array_keys($mapping)[0];
-        $toAttribute = $mapping[$fromAttribute];
+        if (isset($mapping[0])) {
+            $fromAttribute = $mapping[0];
+            $toAttribute = $mapping[1];
+        } else {
+            $fromAttribute = array_keys($mapping)[0];
+            $toAttribute = $mapping[$fromAttribute];
+        }
 
-        $resultData = $bulkCallback(\Functional\pluck($this->collection, $fromAttribute));
-        $resultData = array_combine(\Functional\pluck($resultData, $indexAttribute), $resultData);
+        $keys = is_string($fromAttribute) ?
+            Functional\pluck($this->collection, $fromAttribute) :
+            Functional\map($this->collection, $fromAttribute);
+        $resultData = $bulkCallback($keys);
+        $resultData = is_string($indexAttribute) ?
+            array_combine(Functional\pluck($resultData, $indexAttribute), $resultData) :
+            array_combine(
+                Functional\map($resultData, function ($item) use ($indexAttribute) { return self::objectId($item, $indexAttribute); }),
+                $resultData
+            );
+
         foreach ($this->collectionState as $item) {
             $itemId = $this->itemId($item);
-            if (!isset($resultData[$item->$fromAttribute])) {
+            $fromAttributeValue = is_string($fromAttribute) ? $item->$fromAttribute : $fromAttribute($item);
+            if (!isset($resultData[$fromAttributeValue])) {
                 continue;
             }
             if (!isset($this->meta[$itemId])) {
                 $this->meta[$itemId] = new stdClass;
             }
-            $this->meta[$itemId]->$toAttribute = $resultData[$item->$fromAttribute];
+            $this->meta[$itemId]->$toAttribute = $resultData[$fromAttributeValue];
         }
         return $this;
     }
 
-    protected function itemId($item)
+    protected function itemId($item): string
+    {
+        return self::objectId($item, $this->idAttr);
+    }
+
+    /**
+     * @param mixed $object
+     * @param string|string[] $idAttr
+     * @return string
+     */
+    protected static function objectId($object, $idAttr): string
     {
         return join(
             ' ',
             Functional\map(
-                (array) $this->idAttr,
-                function (string $idAttr) use ($item) { return $item->{$idAttr}; }
+                (array) $idAttr,
+                function (string $idAttr) use ($object) { return $object->{$idAttr}; }
             )
         );
     }
