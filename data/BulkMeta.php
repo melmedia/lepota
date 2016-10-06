@@ -75,14 +75,16 @@ class BulkMeta
         }
 
         $resultData = $bulkCallback(
-            Functional\map($this->collection, function ($item) use ($fromAttribute) { return self::objectKey($item, $fromAttribute, false); })
+            Functional\unique(
+                array_filter(
+                    Functional\map($this->collection, function ($item) use ($fromAttribute) { return self::objectKey($item, $fromAttribute, false); })
+                )
+            )
         );
-        $resultData = is_string($indexAttribute) ?
-            array_combine(Functional\pluck($resultData, $indexAttribute), $resultData) :
-            array_combine(
-                Functional\map($resultData, function ($item) use ($indexAttribute) { return self::objectKey($item, $indexAttribute, true); }),
-                $resultData
-            );
+        $resultData = array_combine(
+            Functional\map($resultData, function ($item) use ($indexAttribute) { return self::objectKey($item, $indexAttribute, true); }),
+            $resultData
+        );
 
         foreach ($this->collection as $item) {
             $itemId = $this->itemId($item);
