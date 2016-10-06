@@ -11,7 +11,7 @@ class BulkMeta
     protected $collection;
     /** @var array */
     protected $meta = [];
-    /** @var string|string[] */
+    /** @var string|string[]|null */
     protected $idAttr;
 
     public function __construct(array $collection, $idAttr = 'id')
@@ -47,7 +47,9 @@ class BulkMeta
     }
 
     /**
-     * @param array $mapping Map [from attribute => to attribute] or [[from attributes], to attribute]
+     * @param array $mapping Map [from attribute => to attribute]
+     * or [[from attributes], to attribute] (array used as from attribute)
+     * or [to attribute] (entire value used as from attribute)
      * @param callable $bulkCallback function (array $fromAttributeValues): array
      * @param string|string[] $indexAttribute what attribute of resulted array mapped to fromAttribute
      * @return self
@@ -60,8 +62,13 @@ class BulkMeta
         }
 
         if (isset($mapping[0])) {
-            $fromAttribute = $mapping[0];
-            $toAttribute = $mapping[1];
+            if (isset($mapping[1])) {
+                $fromAttribute = $mapping[0];
+                $toAttribute = $mapping[1];
+            } else {
+                $fromAttribute = null;
+                $toAttribute = $mapping[0];
+            }
         } else {
             $fromAttribute = array_keys($mapping)[0];
             $toAttribute = $mapping[$fromAttribute];
@@ -98,7 +105,7 @@ class BulkMeta
 
     /**
      * @param mixed $object
-     * @param string|string[]|callable $keyAttr
+     * @param string|string[]|callable|null $keyAttr
      * @param bool $isReturnString if true, join array with spaces
      * @return string|array
      * @throws Exception
@@ -106,6 +113,10 @@ class BulkMeta
     protected static function objectKey($object, $keyAttr, bool $isReturnString)
     {
         switch (true) {
+            case is_null($keyAttr):
+                $key = $object;
+                break;
+
             case is_string($keyAttr):
                 $key = $object->$keyAttr;
                 break;
