@@ -1,6 +1,7 @@
 <?php
 namespace lepota\data;
 
+use Exception;
 use stdClass;
 use Functional;
 
@@ -12,14 +13,18 @@ class BulkMeta
     protected $meta = [];
     /** @var string|string[] */
     protected $idAttr;
-    /** @var array Modified temporary collection after call of filterAttr */
-    protected $collectionState;
 
     public function __construct(array $collection, $idAttr = 'id')
     {
         $this->collection = $collection;
-        $this->collectionState = &$this->collection;
         $this->idAttr = $idAttr;
+    }
+
+    protected function copy($collection)
+    {
+        $copy = new BulkMeta($collection, $this->idAttr);
+        $copy->meta = &$this->meta;
+        return $copy;
     }
 
     public function meta($item): stdClass
@@ -34,20 +39,26 @@ class BulkMeta
         if (!is_array($filterValues)) {
             $filterValues = (array) $filterValues;
         }
-        $this->collectionState = Functional\filter($this->collectionState, function ($item) use ($attributeName, $filterValues): bool {
-            return in_array($item->$attributeName, $filterValues);
-        });
-        return $this;
+        return $this->copy(
+            Functional\filter($this->collection, function ($item) use ($attributeName, $filterValues): bool {
+                return in_array($item->$attributeName, $filterValues);
+            })
+        );
     }
 
     /**
-     * @param array $mapping Map [from attribute => to attribute] or [function ($item): string, to attribute]
+     * @param array $mapping Map [from attribute => to attribute] or [[from attributes], to attribute]
      * @param callable $bulkCallback function (array $fromAttributeValues): array
      * @param string|string[] $indexAttribute what attribute of resulted array mapped to fromAttribute
      * @return self
      */
     public function bulkMap(array $mapping, callable $bulkCallback, $indexAttribute = 'id'): self
     {
+        if (!$this->collection) {
+            // nothing to map
+            return $this;
+        }
+
         if (isset($mapping[0])) {
             $fromAttribute = $mapping[0];
             $toAttribute = $mapping[1];
@@ -56,20 +67,19 @@ class BulkMeta
             $toAttribute = $mapping[$fromAttribute];
         }
 
-        $keys = is_string($fromAttribute) ?
-            Functional\pluck($this->collection, $fromAttribute) :
-            Functional\map($this->collection, $fromAttribute);
-        $resultData = $bulkCallback($keys);
+        $resultData = $bulkCallback(
+            Functional\map($this->collection, function ($item) use ($fromAttribute) { return self::objectKey($item, $fromAttribute, false); })
+        );
         $resultData = is_string($indexAttribute) ?
             array_combine(Functional\pluck($resultData, $indexAttribute), $resultData) :
             array_combine(
-                Functional\map($resultData, function ($item) use ($indexAttribute) { return self::objectId($item, $indexAttribute); }),
+                Functional\map($resultData, function ($item) use ($indexAttribute) { return self::objectKey($item, $indexAttribute, true); }),
                 $resultData
             );
 
-        foreach ($this->collectionState as $item) {
+        foreach ($this->collection as $item) {
             $itemId = $this->itemId($item);
-            $fromAttributeValue = is_string($fromAttribute) ? $item->$fromAttribute : $fromAttribute($item);
+            $fromAttributeValue = self::objectKey($item, $fromAttribute, true);
             if (!isset($resultData[$fromAttributeValue])) {
                 continue;
             }
@@ -83,23 +93,42 @@ class BulkMeta
 
     protected function itemId($item): string
     {
-        return self::objectId($item, $this->idAttr);
+        return self::objectKey($item, $this->idAttr, true);
     }
 
     /**
      * @param mixed $object
-     * @param string|string[] $idAttr
-     * @return string
+     * @param string|string[]|callable $keyAttr
+     * @param bool $isReturnString if true, join array with spaces
+     * @return string|array
+     * @throws Exception
      */
-    protected static function objectId($object, $idAttr): string
+    protected static function objectKey($object, $keyAttr, bool $isReturnString)
     {
-        return join(
-            ' ',
-            Functional\map(
-                (array) $idAttr,
-                function (string $idAttr) use ($object) { return $object->{$idAttr}; }
-            )
-        );
+        switch (true) {
+            case is_string($keyAttr):
+                $key = $object->$keyAttr;
+                break;
+
+            case is_array($keyAttr):
+                $key = Functional\map(
+                    $keyAttr,
+                    function (string $keyAttrItem) use ($object) { return $object->{$keyAttrItem}; }
+                );
+                if ($isReturnString) {
+                    $key = join(' ', $key);
+                }
+                break;
+
+            case is_callable($keyAttr):
+                $key = $keyAttr($object);
+                break;
+
+            default:
+                throw new Exception('Wrong keyAttr type');
+        }
+
+        return $key;
     }
 
 }
