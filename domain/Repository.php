@@ -11,6 +11,11 @@ abstract class Repository
     /** @var ActiveRecord[] */
     protected $arObjects = [];
 
+    public function getDomainARMapper()
+    {
+        return new DomainARMapper;
+    }
+
     /**
      * @return Service
      */
@@ -134,77 +139,16 @@ abstract class Repository
         if (!$modelAR) {
             $modelAR = $this->createActiveRecordModel($domainModel);
         }
-        $storageSpecification = $this->domainToARAttributes($domainModel, $modelAR);
+        $storageSpecification = $this->getDomainARMapper()->domainToAR($domainModel, $modelAR);
         $storageSpecification->rootAR = $modelAR;
-        return $storageSpecification;
-    }
-
-    /**
-     * Override in subclasses
-     *
-     * @param DomainModel $domainModel
-     * @param ActiveRecord $modelAR
-     * @return StorageSpecification
-     */
-    protected function domainToARAttributes(DomainModel $domainModel, ActiveRecord $modelAR): StorageSpecification
-    {
-        $modelAR->setAttributes($domainModel->getAttributes(null, ['id']), false);
-        return new StorageSpecification;
-    }
-
-    /**
-     * Map domain model relation to active record relation
-     *
-     * @param DomainModel $domainModel
-     * @param ActiveRecord $modelAR
-     * @param string $relationName
-     * @param \Closure $relationARCreateCallback
-     * @return StorageSpecification
-     */
-    protected function domainToARRelated(
-        DomainModel $domainModel,
-        ActiveRecord $modelAR,
-        string $relationName,
-        \Closure $relationARCreateCallback
-    )
-    {
-        /** @var DomainModel $relationDomainModel */
-        $relationDomainModel = $domainModel->$relationName;
-
-        $storageSpecification = new StorageSpecification;
-        if (!$relationDomainModel) {
-            if ($modelAR->$relationName) {
-                $storageSpecification->deleteAfter([$relationName => $modelAR->$relationName]);
-            }
-        } else {
-
-            /** @var ActiveRecord $relationAR */
-            $relationAR = $modelAR->$relationName ?? $relationARCreateCallback();
-            $relationAR->setAttributes($relationDomainModel->getAttributes(null, ['id']), false);
-
-            $storageSpecification->saveBefore([$relationName => $relationAR]);
-        }
-
         return $storageSpecification;
     }
 
     protected function arToDomain(ActiveRecord $modelAR, bool $isBulkRequest): DomainModel
     {
         $domainModel = $this->getDomainModelFactory()->createEmpty();
-        $this->arToDomainAttributes($modelAR, $domainModel, $isBulkRequest);
+        $this->getDomainARMapper()->arToDomain($modelAR, $domainModel, $isBulkRequest);
         return $domainModel;
-    }
-
-    /**
-     * Override in subclasses
-     *
-     * @param DomainModel $domainModel
-     * @param ActiveRecord $modelAR
-     * @param bool $isBulkRequest
-     */
-    protected function arToDomainAttributes(ActiveRecord $modelAR, DomainModel $domainModel, bool $isBulkRequest)
-    {
-        $domainModel->setAttributes($modelAR->attributes, false);
     }
 
     /**
