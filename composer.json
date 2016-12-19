@@ -2,7 +2,7 @@
     "name": "c7s/lepota",
     "type": "library",
     "require": {
-        "cebe/assetfree-yii2": "2.0.9",
+        "yiisoft/yii2": "2.0.9",
         "lstrojny/functional-php": "1.2.3"
     },
     "autoload": {
