@@ -26,13 +26,26 @@ class Client
 
     /**
      * @param string $url
-     * @param array $body
+     * @param array|string $body
+     * @param bool $isRawBody
      * @return mixed
      * @throws Exception
      */
-    public function post($url, $body = [])
+    public function post($url, $body = [], bool $isRawBody = false)
     {
-        return $this->json($this->http->post($url, ['json' => $body]));
+        return $this->json($this->http->post($url, $isRawBody ? ['body' => $body] : ['json' => $body]));
+    }
+
+    /**
+     * @param string $url
+     * @param array|string $body
+     * @param bool $isRawBody
+     * @return mixed
+     * @throws Exception
+     */
+    public function put($url, $body = [], bool $isRawBody = false)
+    {
+        return $this->json($this->http->put($url, $isRawBody ? ['body' => $body] : ['json' => $body]));
     }
 
     /**

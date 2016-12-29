@@ -1,7 +1,6 @@
 {
     "name": "c7s/lepota",
     "type": "library",
-    "minimum-stability": "dev",
     "require": {
         "yiisoft/yii2": "2.0.9",
         "lstrojny/functional-php": "1.2.3"

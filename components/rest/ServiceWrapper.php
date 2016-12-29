@@ -40,12 +40,13 @@ class ServiceWrapper extends Component
     /**
      * @param string $url
      * @param array $body
+     * @param bool $isRawBody
      * @return mixed
      * @throws Exception
      */
-    public function post($url, $body = [])
+    public function post($url, $body = [], bool $isRawBody = false)
     {
-        return $this->restClient->post($url, $body);
+        return $this->restClient->post($url, $body, $isRawBody);
     }
 
     /**
