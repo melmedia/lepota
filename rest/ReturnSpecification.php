@@ -11,8 +11,11 @@ class ReturnSpecification
     const MODE_ONLY = 'only';
     const MODE_ADDITION = 'addition';
 
+    /** @var string */
     public $mode;
+    /** @var string */
     public $only;
+    /** @var string[] */
     public $additions = [];
 
     public function __construct(string $return = null)
@@ -31,6 +34,16 @@ class ReturnSpecification
                     break;
             }
         }
+    }
+
+    /**
+     * Check if only one field requested
+     * @param string $only
+     * @return bool
+     */
+    public function only(string $only): bool
+    {
+        return $only == $this->only;
     }
 
     /**
