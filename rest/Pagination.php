@@ -44,10 +44,13 @@ abstract class Pagination
 
     protected function data()
     {
-        $data = $this->getData($this->limit + 1);
+        $isUnlimited = 0 === $this->limit;
+        $data = $this->getData(!$isUnlimited ? $this->limit + 1 : 0);
 
-        $isHaveNextPage = ($data && count($data) > $this->limit);
-        $data = array_slice($data, 0, $this->limit);
+        $isHaveNextPage = !$isUnlimited ? ($data && count($data) > $this->limit) : false;
+        if (!$isUnlimited) {
+            $data = array_slice($data, 0, $this->limit);
+        }
 
         if ($isHaveNextPage) {
             Yii::$app->response->setLinkHeader(
