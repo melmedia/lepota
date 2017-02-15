@@ -5,7 +5,7 @@ namespace lepota\rest;
  * List splits into pages by numeric offset.
  *
  * To response http headers added:
- * 'Link: currentUrl?offet=current offset + limit; rel="next"'
+ * 'Link: currentUrl?offset=current offset + limit; rel="next"'
  */
 class OffsetPagination extends Pagination
 {
