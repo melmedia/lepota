@@ -60,7 +60,9 @@ abstract class Repository
             throw new EntityStorageException($e);
         }
 
-        $domainModel->id = $storageSpecification->rootAR->id;
+        foreach ($storageSpecification->rootAR->getPrimaryKey(true) as $column => $value) {
+            $domainModel->$column = $value;
+        }
     }
 
     /**
@@ -79,7 +81,7 @@ abstract class Repository
 
     public function update(DomainModel $domainModel)
     {
-        $modelAR = $this->arObjects[self::id($domainModel)];
+        $modelAR = $this->arObjects[$this->id($domainModel)];
         $storageSpecification = $this->domainToAR($domainModel, $modelAR);
 
         try {
@@ -211,7 +213,7 @@ abstract class Repository
      * @param DomainModel $domainModel
      * @return int|string
      */
-    protected static function id(DomainModel $domainModel)
+    protected function id(DomainModel $domainModel)
     {
         return $domainModel->id;
     }
