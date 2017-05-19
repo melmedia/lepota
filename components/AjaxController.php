@@ -1,6 +1,7 @@
 <?php
 namespace lepota\components;
 
+use Functional;
 use Yii;
 use lepota\exceptions\AjaxException;
 
