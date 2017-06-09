@@ -166,6 +166,12 @@ class ApplicationConfig
         return $this;
     }
 
+    public function setEnvName(string $envName): self
+    {
+        $this->envName = $envName;
+        return $this;
+    }
+
     /**
      * @return ApplicationConfig
      */
