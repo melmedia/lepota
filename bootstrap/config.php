@@ -238,6 +238,28 @@ class ApplicationConfig
         elseif (file_exists($propertiesFile = $this->getEnvPath("properties.php"))) {
             $this->properties = require $propertiesFile;
         }
+
+        if (file_exists('/opt/environment.sh')) {
+            foreach (file('/opt/environment.sh') as $paramValue) {
+                $paramValue = rtrim($paramValue);
+                if (!$paramValue || '#' == $paramValue[0]) {
+                    continue;
+                }
+                list($param, $value) = explode(
+                    '=',
+                    str_replace(
+                        'export ',
+                        '',
+                        $paramValue
+                    )
+                );
+                if (!$param || !$value) {
+                    throw new ConfigError("/opt/environment.sh format must be 'key=value', 'export key=value', lines started with # are ignored");
+                }
+                $this->properties[$param] = $value;
+            }
+        }
+
         if (!is_array($this->properties) || empty($this->properties)) {
             throw new ConfigError("No properties in properties.local.php, properties.php, something going wrong");
         }
