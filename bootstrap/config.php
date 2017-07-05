@@ -225,20 +225,16 @@ class ApplicationConfig
     }
 
     /**
-     * Загружает переменные из properties.local.php или properties.php
+     * Load properties from host-wide shell environment variables file /opt/environment.sh
      *
      * @return ApplicationConfig
      * @throws ConfigError
      */
-    public function loadProperties()
+    public function loadEnvironmentFile()
     {
-        if (file_exists($propertiesFile = $this->getEnvPath("properties.local.php"))) {
-            $this->properties = require $propertiesFile;
+        if (!is_array($this->properties)) {
+            $this->properties = [];
         }
-        elseif (file_exists($propertiesFile = $this->getEnvPath("properties.php"))) {
-            $this->properties = require $propertiesFile;
-        }
-
         if (file_exists('/opt/environment.sh')) {
             foreach (file('/opt/environment.sh') as $paramValue) {
                 $paramValue = rtrim($paramValue);
@@ -258,6 +254,24 @@ class ApplicationConfig
                 }
                 $this->properties[$param] = $value;
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * Загружает переменные из properties.local.php или properties.php
+     *
+     * @return ApplicationConfig
+     * @throws ConfigError
+     */
+    public function loadProperties()
+    {
+        if (file_exists($propertiesFile = $this->getEnvPath("properties.local.php"))) {
+            $this->properties = array_merge($this->properties, require $propertiesFile);
+        }
+        elseif (file_exists($propertiesFile = $this->getEnvPath("properties.php"))) {
+            $this->properties = array_merge($this->properties, require $propertiesFile);
         }
 
         if (!is_array($this->properties) || empty($this->properties)) {
