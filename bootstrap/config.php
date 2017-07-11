@@ -225,6 +225,41 @@ class ApplicationConfig
     }
 
     /**
+     * Load properties from host-wide shell environment variables file /opt/environment.sh
+     *
+     * @return ApplicationConfig
+     * @throws ConfigError
+     */
+    public function loadEnvironmentFile()
+    {
+        if (!is_array($this->properties)) {
+            $this->properties = [];
+        }
+        if (file_exists('/opt/environment.sh')) {
+            foreach (file('/opt/environment.sh') as $paramValue) {
+                $paramValue = rtrim($paramValue);
+                if (!$paramValue || '#' == $paramValue[0]) {
+                    continue;
+                }
+                list($param, $value) = explode(
+                    '=',
+                    str_replace(
+                        'export ',
+                        '',
+                        $paramValue
+                    )
+                );
+                if (!$param || !$value) {
+                    throw new ConfigError("/opt/environment.sh format must be 'key=value', 'export key=value', lines started with # are ignored");
+                }
+                $this->properties[$param] = $value;
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Загружает переменные из properties.local.php или properties.php
      *
      * @return ApplicationConfig
@@ -233,11 +268,12 @@ class ApplicationConfig
     public function loadProperties()
     {
         if (file_exists($propertiesFile = $this->getEnvPath("properties.local.php"))) {
-            $this->properties = require $propertiesFile;
+            $this->properties = array_merge($this->properties, require $propertiesFile);
         }
         elseif (file_exists($propertiesFile = $this->getEnvPath("properties.php"))) {
-            $this->properties = require $propertiesFile;
+            $this->properties = array_merge($this->properties, require $propertiesFile);
         }
+
         if (!is_array($this->properties) || empty($this->properties)) {
             throw new ConfigError("No properties in properties.local.php, properties.php, something going wrong");
         }
