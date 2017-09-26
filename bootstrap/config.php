@@ -290,20 +290,35 @@ class ApplicationConfig
      */
     public function property($property, $default = null)
     {
-        if (!isset($this->properties[$property])) {
+        $propertyValue = null;
+        if (isset($this->properties[$property])) {
+            $propertyValue = $this->properties[$property];
+        }
+
+        if (null === $propertyValue) {
+            $env = getenv($property);
+            if (false !== $env) {
+                $propertyValue = $env;
+            }
+        }
+
+        if (null === $propertyValue) {
             if (null !== $default) {
                 return $default;
             }
             else {
-                throw new ConfigError("Property $property is not defined properties.php, properties.local.php");
+                throw new ConfigError(
+                    "Property $property is not defined properties.php, properties.local.php, /opt/environment.sh or environment variables"
+                );
             }
         }
-        return $this->properties[$property];
+
+        return $propertyValue;
     }
 
     public function hasProperty($property)
     {
-        return isset($this->properties[$property]);
+        return isset($this->properties[$property]) || false !== getenv($property);
     }
 
     /**
