@@ -47,6 +47,7 @@ abstract class BulkRequest
         foreach ($this->requests as $request) {
             $request->promise->resolve($entities[$request->id]);
         }
+        $this->requests = [];
         $queue = \GuzzleHttp\Promise\queue();
         $queue->run();
     }
