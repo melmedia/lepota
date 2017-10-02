@@ -63,11 +63,13 @@ class ServiceWrapper extends Component
      *
      * @param string $url
      * @param array $ids
+     * @param bool $isUseBody whether is send ids in GET body
      * @return mixed
      */
-    public function getCollection($url, $ids)
+    public function getCollection($url, $ids, $isUseBody)
     {
-        return $this->restClient->get($url, [], ['id' => join(',', $ids)]);
+        $params = ['id' => join(',', $ids)];
+        return $this->restClient->get($url, $isUseBody ? [] : $params, $isUseBody ? $params : null);
     }
 
 }
