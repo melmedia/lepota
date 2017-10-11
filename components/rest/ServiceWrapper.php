@@ -58,4 +58,18 @@ class ServiceWrapper extends Component
         return $this->restClient->delete($url);
     }
 
+    /**
+     * Special method to overcome HTTP GET request size limit. Solution is to send request in GET body (non-standard).
+     *
+     * @param string $url
+     * @param array $ids
+     * @param bool $isUseBody whether is send ids in GET body
+     * @return mixed
+     */
+    public function getCollection($url, $ids, $isUseBody)
+    {
+        $params = ['id' => join(',', $ids)];
+        return $this->restClient->get($url, $isUseBody ? [] : $params, $isUseBody ? $params : null);
+    }
+
 }

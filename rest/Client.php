@@ -17,11 +17,16 @@ class Client
     /**
      * @param string $url
      * @param array $query
+     * @param array|null $bodyParams Allow to overcome HTTP GET request size limit with sending request
+     * in GET body (non-standard).
      * @return mixed
      */
-    public function get($url, $query = [])
+    public function get($url, $query = [], array $bodyParams = null)
     {
-        return $this->json($this->http->get($url, ['query' => $query]));
+        return $this->json($this->http->get(
+            $url,
+            null !== $bodyParams ? ['json' => $bodyParams] : ['query' => $query]
+        ));
     }
 
     /**
