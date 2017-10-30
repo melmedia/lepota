@@ -45,17 +45,14 @@ class AjaxException extends HttpException
     }
 
     /**
-     * Please notice: array of errors returned
      * @param string|null $message
      * @return array
      */
     public function getAjaxResponse($message = null)
     {
         return [
-            [
-                'code' => $this->getAjaxErrorCode(),
-                'message' => null !== $message ? $message : $this->getAjaxMessage($message)
-            ]
+            'code' => $this->getAjaxErrorCode(),
+            'message' => null !== $message ? $message : $this->getAjaxMessage($message)
         ];
     }
 
