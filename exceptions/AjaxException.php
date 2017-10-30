@@ -51,8 +51,10 @@ class AjaxException extends HttpException
     public function getAjaxResponse($message = null)
     {
         return [
-            'code' => $this->getAjaxErrorCode(),
-            'message' => null !== $message ? $message : $this->getAjaxMessage($message)
+            [
+                'code' => $this->getAjaxErrorCode(),
+                'message' => null !== $message ? $message : $this->getAjaxMessage($message)
+            ]
         ];
     }
 
