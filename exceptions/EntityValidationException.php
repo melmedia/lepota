@@ -78,18 +78,11 @@ class EntityValidationException extends AjaxException
         return 422;
     }
 
-    /**
-     * Please notice: array of errors returned
-     * @param string|null $message
-     * @return array
-     */
     public function getAjaxResponse($message = null)
     {
         return [
-            [
-                'code' => $this->getAjaxErrorCode(),
-                'validationErrors' => $this->modelErrors,
-            ]
+            'code' => $this->getAjaxErrorCode(),
+            'validationErrors' => $this->modelErrors,
         ];
     }
 

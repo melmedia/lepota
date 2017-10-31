@@ -45,7 +45,6 @@ class AjaxException extends HttpException
     }
 
     /**
-     * Please notice: array of errors returned
      * @param string|null $message
      * @return array
      */
