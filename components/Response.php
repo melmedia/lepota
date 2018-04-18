@@ -11,7 +11,7 @@ class Response extends \yii\web\Response
      */
     public function setLinkHeader($url, $relation)
     {
-        $this->headers->add('Link', $url . '; rel="' . $relation . '"');
+        $this->headers->add('Link', "<$url>; rel=\"$relation\"");
     }
     
 }
