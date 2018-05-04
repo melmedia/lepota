@@ -62,13 +62,17 @@ class ServiceWrapper extends Component
      * Special method to overcome HTTP GET request size limit. Solution is to send request in GET body (non-standard).
      *
      * @param string $url
-     * @param array $ids
+     * @param array $params Hashmap of query params ['id' => [1,2,3]], arrays will be joined by comma
      * @param bool $isUseBody whether is send ids in GET body
      * @return mixed
      */
-    public function getCollection($url, $ids, $isUseBody)
+    public function getCollection($url, $params, $isUseBody)
     {
-        $params = ['id' => join(',', $ids)];
+        foreach ($params as $param => $value) {
+            if (is_array($value)) {
+                $params[$param] = join(',', $value);
+            }
+        }
         return $this->restClient->get($url, $isUseBody ? [] : $params, $isUseBody ? $params : null);
     }
 
