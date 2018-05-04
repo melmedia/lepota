@@ -2,9 +2,23 @@
     "name": "c7s/lepota",
     "type": "library",
     "require": {
-        "cebe/assetfree-yii2": "2.0.9",
-        "lstrojny/functional-php": "1.2.3"
+        "yiisoft/yii2": "2.0.15.1",
+        "lstrojny/functional-php": "1.7.0"
     },
+	"replace": {
+		"bower-asset/jquery": "*",
+		"bower-asset/jquery.inputmask": "*",
+		"bower-asset/inputmask": "*",
+		"bower-asset/punycode": "*",
+		"bower-asset/yii2-pjax": "*"
+	},
+	"conflict": {
+		"bower-asset/jquery": "*",
+		"bower-asset/jquery.inputmask": "*",
+		"bower-asset/inputmask": "*",
+		"bower-asset/punycode": "*",
+		"bower-asset/yii2-pjax": "*"
+	},
     "autoload": {
         "psr-4": {"lepota\\": ""}
     }
