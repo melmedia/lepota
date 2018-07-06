@@ -15,22 +15,22 @@ class OrderPagination extends Pagination
     protected $orderingAttributeName;
     protected $orderingValue;
 
-    protected function __construct(int $limit, array $ordering, callable $dataCallback)
+    public function __construct(int $limit, array $ordering, callable $dataCallback)
     {
         parent::__construct($limit, $dataCallback);
         $this->orderingAttributeName = array_keys($ordering)[0];
         $this->orderingValue = $ordering[$this->orderingAttributeName];
     }
 
-    public function getData(int $limit): array
-    {
-        return call_user_func($this->dataCallback, $limit, $this->orderingValue);
-    }
-
-    protected function getNextPageParams(array $data): array
+    public function getNextPageParams(array $data): array
     {
         $nextOrderingValue = Functional\last($data)->{$this->orderingAttributeName};
         return ['after' . ucfirst($this->orderingAttributeName) => $nextOrderingValue];
+    }
+
+    protected function getData(int $limit): array
+    {
+        return call_user_func($this->dataCallback, $limit, $this->orderingValue);
     }
 
 }

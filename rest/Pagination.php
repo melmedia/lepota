@@ -10,6 +10,8 @@ abstract class Pagination
     protected $dataCallback;
     /** @var int */
     protected $limit;
+    /** @var boolean */
+    protected $isHaveNextPage;
 
     protected function __construct(int $limit, callable $dataCallback)
     {
@@ -23,7 +25,7 @@ abstract class Pagination
      * @param callable $dataCallback function (int $limit, int $offset = null): array
      * @return array
      */
-    public static function offset(int $limit, int $offset = null, callable $dataCallback)
+    public static function offset(int $limit, ?int $offset, callable $dataCallback)
     {
         return (new OffsetPagination($limit, $offset, $dataCallback))->data();
     }
@@ -40,26 +42,33 @@ abstract class Pagination
     }
 
     abstract protected function getData(int $limit): array;
-    abstract protected function getNextPageParams(array $data): array;
+    abstract public function getNextPageParams(array $data): array;
 
-    protected function data()
+    public function data()
     {
         $isUnlimited = 0 === $this->limit;
         $data = $this->getData(!$isUnlimited ? $this->limit + 1 : 0);
 
-        $isHaveNextPage = !$isUnlimited ? ($data && count($data) > $this->limit) : false;
+        $this->isHaveNextPage = !$isUnlimited ? ($data && count($data) > $this->limit) : false;
         if (!$isUnlimited) {
             $data = array_slice($data, 0, $this->limit);
         }
 
-        if ($isHaveNextPage) {
-            Yii::$app->response->setLinkHeader(
-                Url::current($this->getNextPageParams($data)),
-                'next'
-            );
+        if ($this->isHaveNextPage) {
+            if ('GET' == Yii::$app->request->method) {
+                Yii::$app->response->setLinkHeader(
+                    Url::current($this->getNextPageParams($data)),
+                    'next'
+                );
+            }
         }
 
         return $data;
+    }
+
+    public function isHaveNextPage()
+    {
+        return $this->isHaveNextPage;
     }
 
 }
