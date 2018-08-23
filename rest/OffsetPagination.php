@@ -12,20 +12,20 @@ class OffsetPagination extends Pagination
     /** @var int|null */
     protected $offset;
 
-    protected function __construct(int $limit, int $offset = null, callable $dataCallback)
+    public function __construct(int $limit, ?int $offset, callable $dataCallback)
     {
         parent::__construct($limit, $dataCallback);
         $this->offset = $offset;
     }
 
-    public function getData(int $limit): array
-    {
-        return call_user_func($this->dataCallback, $limit, $this->offset);
-    }
-
-    protected function getNextPageParams(array $data): array
+    public function getNextPageParams(array $data): array
     {
         return ['offset' => $this->offset + $this->limit];
+    }
+
+    protected function getData(int $limit): array
+    {
+        return call_user_func($this->dataCallback, $limit, $this->offset);
     }
 
 }
