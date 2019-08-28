@@ -11,6 +11,6 @@ interface ServiceDiscoveryInterface
      * @param string $serviceName
      * @return string|null
      */
-    public function getLocation($serviceName);
+    public function getLocation(string $serviceName);
 
 }
