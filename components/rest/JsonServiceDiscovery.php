@@ -31,12 +31,12 @@ class JsonServiceDiscovery extends Component implements ServiceDiscoveryInterfac
      * @param string $serviceName
      * @return string|null
      */
-    public function getLocation($serviceName)
+    public function getLocation(string $serviceName)
     {
         if (!isset($this->config[$serviceName])) {
             return null;
         }
         return $this->config[$serviceName];
     }
-    
+
 }
