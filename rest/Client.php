@@ -55,6 +55,18 @@ class Client
 
     /**
      * @param string $url
+     * @param array|string $body
+     * @param bool $isRawBody
+     * @return mixed
+     * @throws Exception
+     */
+    public function patch($url, $body = [], bool $isRawBody = false)
+    {
+        return $this->json($this->http->patch($url, $isRawBody ? ['body' => $body] : ['json' => $body]));
+    }
+
+    /**
+     * @param string $url
      * @return mixed
      */
     public function delete($url)
