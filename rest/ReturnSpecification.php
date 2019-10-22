@@ -18,6 +18,26 @@ class ReturnSpecification
     /** @var string[] */
     public $additions = [];
 
+    /**
+     * Filter input parameters by prefix, remove prefix from parameter names
+     *
+     * @param array $queryParams param => value hashmap
+     * @param string $prefix
+     * @return array
+     */
+    public static function getQueryParamsByPrefix(array $queryParams, string $prefix): array
+    {
+        $params = [];
+        $prefixLength = strlen($prefix);
+        foreach ($queryParams as $param => $value) {
+            if (0 !== strncmp($param, $prefix, $prefixLength)) {
+                continue;
+            }
+            $params[substr($param, $prefixLength)] = $value;
+        }
+        return $params;
+    }
+
     public function __construct(string $return = null)
     {
         if ($return) {
