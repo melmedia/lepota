@@ -1,11 +1,12 @@
 <?php
 namespace lepota\components;
 
+use yii\base\Component;
 use \lepota\rest\Client as Client;
 use \lepota\components\rest\EnvServiceDiscovery as EnvServiceDiscovery;
-use \GuzzleHttp\RequestOptions as RequestOptions;
+use GuzzleHttp\RequestOptions as RequestOptions;
 
-class FrontendClient
+class FrontendClient extends Component
 {
     /** @var string Authorization Bearer token */
     public $token;
