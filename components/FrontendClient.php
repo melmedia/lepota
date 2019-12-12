@@ -1,9 +1,9 @@
 <?php
 namespace lepota\components;
 
-use \lepota\rest\Client;
-use \lepota\components\rest\EnvServiceDiscovery;
-use \GuzzleHttp\RequestOptions;
+use \lepota\rest\Client as Client;
+use \lepota\components\rest\EnvServiceDiscovery as EnvServiceDiscovery;
+use \GuzzleHttp\RequestOptions as RequestOptions;
 
 class FrontendClient
 {
