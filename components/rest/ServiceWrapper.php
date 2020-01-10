@@ -51,6 +51,18 @@ class ServiceWrapper extends Component
 
     /**
      * @param string $url
+     * @param array $body
+     * @param bool $isRawBody
+     * @return mixed
+     * @throws Exception
+     */
+    public function patch($url, $body = [], bool $isRawBody = false)
+    {
+        return $this->restClient->patch($url, $body, $isRawBody);
+    }
+
+    /**
+     * @param string $url
      * @return mixed
      */
     public function delete($url)
