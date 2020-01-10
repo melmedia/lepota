@@ -2,9 +2,9 @@
 namespace lepota\components;
 
 use yii\base\Component;
-use \lepota\rest\Client as Client;
-use \lepota\components\rest\EnvServiceDiscovery as EnvServiceDiscovery;
-use GuzzleHttp\RequestOptions as RequestOptions;
+use lepota\rest\Client;
+use lepota\components\rest\EnvServiceDiscovery;
+use GuzzleHttp\RequestOptions;
 
 class FrontendClient extends Component
 {

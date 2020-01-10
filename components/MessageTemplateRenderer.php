@@ -14,9 +14,11 @@ class MessageTemplateRenderer extends Component
         $this->frontendClient = Yii::$app->get($this->frontendClient);
     }
 
-    public function render(string $templateName, array $params = []): string
+    public function render(string $templateName, array $params = [], bool $isUsePost = false): string
     {
-        return $this->frontendClient->get("backend/email/{$templateName}", $params);
+        return $isUsePost
+            ? $this->frontendClient->post("backend/email/{$templateName}", $params)
+            : $this->frontendClient->get("backend/email/{$templateName}", $params);
     }
 
 }
