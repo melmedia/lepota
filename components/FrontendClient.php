@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components;
 
 use yii\base\Component;
@@ -11,15 +12,18 @@ class FrontendClient extends Component
     /** @var string Authorization Bearer token */
     public $token;
 
+    /** @var string */
+    public $service = 'frontend';
+
     /** @var \lepota\rest\Client */
     protected $restClient;
 
-    function init()
+    public function init()
     {
-        $serviceDiscovery = new EnvServiceDiscovery;
+        $serviceDiscovery = new EnvServiceDiscovery();
 
         $this->restClient = new Client([
-            'base_uri' => $serviceDiscovery->getLocation('frontend'),
+            'base_uri' => $serviceDiscovery->getLocation($this->service),
             RequestOptions::HEADERS => ['Authorization' => "Bearer {$this->token}"],
         ]);
     }
@@ -53,5 +57,4 @@ class FrontendClient extends Component
     {
         return $this->restClient->delete($url);
     }
-
 }
