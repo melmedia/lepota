@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\rest;
 
 use Functional;
@@ -32,5 +33,4 @@ class OrderPagination extends Pagination
     {
         return call_user_func($this->dataCallback, $limit, $this->orderingValue);
     }
-
 }

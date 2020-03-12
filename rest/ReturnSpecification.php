@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\rest;
 
 /**
@@ -8,8 +9,8 @@ namespace lepota\rest;
  */
 class ReturnSpecification
 {
-    const MODE_ONLY = 'only';
-    const MODE_ADDITION = 'addition';
+    protected const MODE_ONLY = 'only';
+    protected const MODE_ADDITION = 'addition';
 
     /** @var string */
     public $mode;
@@ -75,5 +76,4 @@ class ReturnSpecification
     {
         return in_array($addition, $this->additions);
     }
-
 }

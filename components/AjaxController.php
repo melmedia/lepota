@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components;
 
 use Functional;
@@ -7,11 +8,10 @@ use lepota\exceptions\AjaxException;
 
 class AjaxController extends \yii\rest\Controller
 {
-
     public function behaviors()
     {
         return Functional\map(
-            Functional\reject(parent::behaviors(), function($filter, $index) {
+            Functional\reject(parent::behaviors(), function ($filter, $index) {
                 return 'authenticator' == $index || 'rateLimiter' == $index;
             }),
             function ($filter, $f) {
@@ -21,7 +21,8 @@ class AjaxController extends \yii\rest\Controller
                     ];
                 }
                 return $filter;
-            });
+            }
+        );
     }
 
     /**
@@ -35,5 +36,4 @@ class AjaxController extends \yii\rest\Controller
         $response->format = \yii\web\Response::FORMAT_JSON;
         $response->data = $e->getAjaxResponse();
     }
-
 }

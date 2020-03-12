@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\exceptions;
 
 use Functional;
@@ -24,8 +25,7 @@ class EntityValidationException extends AjaxException
         if ($modelErrors instanceof Model) {
             $this->model = $modelErrors;
             $this->modelErrors = $this->model->getErrors();
-        }
-        else {
+        } else {
             $this->modelErrors = $modelErrors;
         }
     }
@@ -108,5 +108,4 @@ class EntityValidationException extends AjaxException
     {
         return $this->modelErrors;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain;
 
 use lepota\domain\ImmutableValue;
@@ -53,5 +54,4 @@ class EntityReference extends ImmutableValue
     {
         return !$this->id || !$this->type;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain;
 
 /**
@@ -38,7 +39,10 @@ trait NestedErrorsTrait
      */
     public function hasErrors($attribute = null)
     {
-        return parent::hasErrors($attribute) || ($attribute === null ? !empty($this->nestedErrors) : isset($this->nestedErrors[$attribute]));
+        return parent::hasErrors($attribute)
+            || ($attribute === null
+                ? !empty($this->nestedErrors)
+                : isset($this->nestedErrors[$attribute])
+            );
     }
-
 }

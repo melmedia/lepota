@@ -1,9 +1,9 @@
 <?php
+
 namespace lepota\components;
 
 class Response extends \yii\web\Response
 {
-
     /**
      * Add Link header to response, indicating url relation
      * @param string $url
@@ -13,5 +13,4 @@ class Response extends \yii\web\Response
     {
         $this->headers->add('Link', "<$url>; rel=\"$relation\"");
     }
-    
 }

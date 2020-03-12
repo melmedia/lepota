@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain;
 
 interface Factory
@@ -7,6 +8,5 @@ interface Factory
     /**
      * @return DomainModel
      */
-    function createEmpty();
-
+    public function createEmpty();
 }

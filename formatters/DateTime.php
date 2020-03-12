@@ -1,11 +1,12 @@
 <?php
+
 namespace lepota\formatters;
 
 class DateTime
 {
-    const DATE_TIME_SQL = 'Y-m-d H:i:sO';
-    const DATE_SQL = 'Y-m-d';
-    const DATE_TIME_ISO_8601 = 'Y-m-d\TH:i:sP';
+    public const DATE_TIME_SQL = 'Y-m-d H:i:sO';
+    public const DATE_SQL = 'Y-m-d';
+    public const DATE_TIME_ISO_8601 = 'Y-m-d\TH:i:sP';
 
     /**
      * Get date+time formatted for PostgreSQL timestamptz
@@ -48,5 +49,4 @@ class DateTime
     {
         return str_replace('T', ' ', $dateTime);
     }
-
 }

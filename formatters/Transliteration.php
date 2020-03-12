@@ -1,9 +1,9 @@
 <?php
+
 namespace lepota\formatters;
 
 class Transliteration
 {
-
     public static function ru2Lat($string)
     {
         $arStrES = ["ае", "уе", "ое", "ые", "ие", "эе", "яе", "юе", "ёе", "ее", "ье", "ъе", "ый", "ий"];
@@ -86,5 +86,4 @@ class Transliteration
 
         return iconv("UTF-8", "UTF-8//IGNORE", strtr($string, $replace));
     }
-
 }

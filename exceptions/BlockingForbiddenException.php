@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\exceptions;
 
 /**
@@ -24,5 +25,4 @@ class BlockingForbiddenException extends ForbiddenException
         $response[0][$this->envelopeName] = $this->blocking;
         return $response;
     }
-
 }

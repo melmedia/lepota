@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\rest;
 
 use Exception;
@@ -80,10 +81,12 @@ class Client
             throw new Exception("Status code is not good " . $response->getStatusCode());
         }
         $result = (string) $response->getBody();
-        if ($response->hasHeader('Content-Type') && false !== strpos($response->getHeader('Content-Type')[0], 'application/json')) {
+        if (
+            $response->hasHeader('Content-Type')
+            && false !== strpos($response->getHeader('Content-Type')[0], 'application/json')
+        ) {
             $result = json_decode($result);
         }
         return $result;
     }
-
 }

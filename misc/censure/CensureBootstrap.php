@@ -1,4 +1,7 @@
 <?php
+
+// phpcs:disable PSR1.Files.SideEffects
+
 namespace lepota\misc\censure;
 
 if (!class_exists('Text_Censure')) {
@@ -8,4 +11,5 @@ if (!class_exists('Text_Censure')) {
 }
 
 class CensureBootstrap extends \Text_Censure
-{}
+{
+}

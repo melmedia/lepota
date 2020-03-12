@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain;
 
 use yii\db\ActiveRecord;
@@ -11,7 +12,7 @@ interface Service
      * @param string|null $excludeStatus
      * @return ActiveRecord|null
      */
-    function get(int $id, string $excludeStatus = null);
+    public function get(int $id, string $excludeStatus = null);
 
     /**
      * @param int $limit
@@ -19,6 +20,5 @@ interface Service
      * @param string|null $filterStatus
      * @return array
      */
-    function list(int $limit, $offset = null, string $filterStatus = null) : array;
-
+    public function list(int $limit, $offset = null, string $filterStatus = null): array;
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain;
 
 use stdClass;
@@ -22,7 +23,9 @@ class TagList
     protected function __construct($tagIds, $tags)
     {
         if (null !== $tagIds) {
-            $this->tagIds = Functional\map($tagIds, function ($id): int { return (int) $id; });
+            $this->tagIds = Functional\map($tagIds, function ($id): int {
+                return (int) $id;
+            });
         }
         $this->tags = $tags;
     }
@@ -53,7 +56,9 @@ class TagList
             null,
             Functional\map(
                 $tags,
-                function ($tag) { return (object) $tag; }
+                function ($tag) {
+                    return (object) $tag;
+                }
             )
         );
     }
@@ -86,7 +91,9 @@ class TagList
         if (null === $this->tagIds) {
             $this->tagIds = Functional\map(
                 Functional\pluck($this->tags, 'id'),
-                function ($id): int { return (int) $id; }
+                function ($id): int {
+                    return (int) $id;
+                }
             );
         }
         return $this->tagIds;
@@ -99,10 +106,12 @@ class TagList
     public function getTags()
     {
         if (null === $this->tags) {
-            $this->tags = Yii::$app->navigationClient->getCollection('tag',
-                ['id' => $this->tagIds], false)->tags;
+            $this->tags = Yii::$app->navigationClient->getCollection(
+                'tag',
+                ['id' => $this->tagIds],
+                false
+            )->tags;
         }
         return $this->tags;
     }
-
 }

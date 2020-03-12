@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\data;
 
 use stdClass;
@@ -12,7 +13,6 @@ use lepota\domain\Tag;
  */
 class TagBulkRequest extends BulkRequest
 {
-
     public function loadEntities(array $ids): array
     {
         $tags = Functional\map(
@@ -23,5 +23,4 @@ class TagBulkRequest extends BulkRequest
         );
         return array_combine(Functional\pluck($tags, 'id'), $tags);
     }
-
 }

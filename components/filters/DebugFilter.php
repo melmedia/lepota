@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components\filters;
 
 use yii\base\ActionFilter;
@@ -9,7 +10,6 @@ use yii\web\NotFoundHttpException;
  */
 class DebugFilter extends ActionFilter
 {
-
     /**
      * This method is invoked right before an action is to be executed (after all possible filters.)
      * You may override this method to do last-minute preparation for the action.
@@ -19,9 +19,8 @@ class DebugFilter extends ActionFilter
     public function beforeAction($action)
     {
         if (defined('YII_DEBUG') && YII_DEBUG) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
         return true;
     }
-
 }
