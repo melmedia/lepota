@@ -1,28 +1,29 @@
 <?php
+
 namespace lepota\components;
 
-use Exception;
-use GuzzleHttp\RequestOptions;
-use Yii;
 use yii\base\Component;
+use lepota\rest\Client;
+use lepota\components\rest\EnvServiceDiscovery;
+use GuzzleHttp\RequestOptions;
 
 class FrontendClient extends Component
 {
     /** @var string Authorization Bearer token */
     public $token;
 
-    /** integer */
-    public $port = 3000;
+    /** @var string */
+    public $service = 'frontend';
 
     /** @var \lepota\rest\Client */
     protected $restClient;
 
     public function init()
     {
-        $frontendIP = Yii::$app->request->userIP ?? '127.0.0.1';
-        $this->restClient = new \lepota\rest\Client([
-            // send request to frontend using client IP address for current request
-            'base_uri' => "http://{$frontendIP}:{$this->port}/",
+        $serviceDiscovery = new EnvServiceDiscovery();
+
+        $this->restClient = new Client([
+            'base_uri' => $serviceDiscovery->getLocation($this->service),
             RequestOptions::HEADERS => ['Authorization' => "Bearer {$this->token}"],
         ]);
     }
@@ -56,5 +57,4 @@ class FrontendClient extends Component
     {
         return $this->restClient->delete($url);
     }
-
 }
