@@ -1,5 +1,5 @@
 {
-    "name": "c7s/lepota",
+    "name": "melmedia/lepota",
     "type": "library",
     "require": {
         "yiisoft/yii2": "2.0.15.1",
