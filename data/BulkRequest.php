@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\data;
 
 use Functional;
@@ -25,7 +26,7 @@ abstract class BulkRequest
      */
     public function get(int $id): Promise
     {
-        $promise = new Promise;
+        $promise = new Promise();
         $this->requests[] = (object)[
             'id' => $id,
             'promise' => $promise,
@@ -51,5 +52,4 @@ abstract class BulkRequest
         $queue = \GuzzleHttp\Promise\queue();
         $queue->run();
     }
-
 }

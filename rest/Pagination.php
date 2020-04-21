@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\rest;
 
 use Yii;
@@ -70,5 +71,4 @@ abstract class Pagination
     {
         return $this->isHaveNextPage;
     }
-
 }

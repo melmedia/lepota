@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\exceptions;
 
 /**
@@ -50,5 +51,4 @@ class EntityStorageException extends AjaxException
         }
         return parent::getAjaxErrorCode();
     }
-
 }

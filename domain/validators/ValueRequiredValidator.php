@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain\validators;
 
 use Yii;
@@ -7,11 +8,10 @@ use yii\validators\Validator;
 use lepota\domain\ImmutableValue;
 
 /**
- * Applicable to attributes of type lepota\domain\Value 
+ * Applicable to attributes of type lepota\domain\Value
  */
 class ValueRequiredValidator extends Validator
 {
-
     public function init()
     {
         parent::init();
@@ -33,7 +33,6 @@ class ValueRequiredValidator extends Validator
         if (!$value instanceof ImmutableValue) {
             return ['{attribute} is not of type ' . ImmutableValue::class, []];
         }
-        return $value->isEmpty() ? [$this->message, []] : null; 
+        return $value->isEmpty() ? [$this->message, []] : null;
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\data;
 
 use stdClass;
@@ -12,7 +13,6 @@ use lepota\domain\User;
  */
 class UserBulkRequest extends BulkRequest
 {
-
     public function loadEntities(array $ids): array
     {
         $users = Functional\map(
@@ -23,5 +23,4 @@ class UserBulkRequest extends BulkRequest
         );
         return array_combine(Functional\pluck($users, 'id'), $users);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain;
 
 use Functional;
@@ -116,8 +117,12 @@ abstract class Repository
     public function list(int $limit, $offset = null): array
     {
         $result = Functional\map(
-            $this->getService()->list($limit, $offset, $this->getFilterStatusForList(),
-                $this->getExcludedStatusForList()),
+            $this->getService()->list(
+                $limit,
+                $offset,
+                $this->getFilterStatusForList(),
+                $this->getExcludedStatusForList()
+            ),
             function ($modelAR) {
                 return $this->arToDomain($modelAR, true);
             }
@@ -151,7 +156,7 @@ abstract class Repository
     protected function domainToARAttributes(DomainModel $domainModel, ActiveRecord $modelAR): StorageSpecification
     {
         $modelAR->setAttributes($domainModel->getAttributes(null, ['id']), false);
-        return new StorageSpecification;
+        return new StorageSpecification();
     }
 
     /**
@@ -168,12 +173,11 @@ abstract class Repository
         ActiveRecord $modelAR,
         string $relationName,
         \Closure $relationARCreateCallback
-    )
-    {
+    ) {
         /** @var DomainModel $relationDomainModel */
         $relationDomainModel = $domainModel->$relationName;
 
-        $storageSpecification = new StorageSpecification;
+        $storageSpecification = new StorageSpecification();
         if (!$relationDomainModel) {
             if ($modelAR->$relationName) {
                 $storageSpecification->deleteAfter([$relationName => $modelAR->$relationName]);
@@ -225,5 +229,4 @@ abstract class Repository
     protected function afterBulkRequest()
     {
     }
-
 }

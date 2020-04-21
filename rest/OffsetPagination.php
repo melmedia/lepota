@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\rest;
 
 /**
@@ -27,5 +28,4 @@ class OffsetPagination extends Pagination
     {
         return call_user_func($this->dataCallback, $limit, $this->offset);
     }
-
 }

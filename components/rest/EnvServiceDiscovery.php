@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components\rest;
 
 use Exception;
@@ -18,5 +19,4 @@ class EnvServiceDiscovery extends Component implements ServiceDiscoveryInterface
         $location = getenv(strtoupper($serviceName) . '_SERVICE');
         return false !== $location ? $location : null;
     }
-
 }

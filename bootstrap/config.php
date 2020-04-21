@@ -1,7 +1,10 @@
 <?php
+
 namespace lepota\config;
+
 // This namespace must be used in all configuration files
 
+// phpcs:disable
 /**
  * Configuration file can return array of parameters or modify base configuration.
  *
@@ -44,6 +47,7 @@ namespace lepota\config;
  *
  * Values will be available with property('param') or property('param', 'defaultValue')
  */
+// phpcs:enable
 
 
 /**
@@ -78,15 +82,15 @@ class ApplicationConfig
 {
     use ParametersContainerTrait;
 
-    const SOURCE_COMMON = 'common';
-    const SOURCE_ENV = 'env';
-    const SOURCE_PARTNERS = 'partners';
+    protected const SOURCE_COMMON = 'common';
+    protected const SOURCE_ENV = 'env';
+    protected const SOURCE_PARTNERS = 'partners';
 
-    const CATEGORY_COMPONENTS = 'components';
-    const CATEGORY_MODULES = 'modules';
+    protected const CATEGORY_COMPONENTS = 'components';
+    protected const CATEGORY_MODULES = 'modules';
 
     /** Default env folder name */
-    const DEFAULT_ENV_NAME = 'dev';
+    protected const DEFAULT_ENV_NAME = 'dev';
 
     /**
      * Base configuration search chain, last item is most base.
@@ -129,7 +133,8 @@ class ApplicationConfig
      * Загрузка конкретного партнёрского конфига
      *
      * @param string $partnerName
-     * @param array $path Путь к конфигу (типа params.php это будет ['params'], components/feature.php это ['components', 'feature'])
+     * @param array $path Путь к конфигу (params.php это будет ['params'],
+     * components/feature.php это ['components', 'feature'])
      * @return array|null Конфиг партнёра или null если такого не нашлось
      */
     public static function loadPartnerConfig($partnerName, $path)
@@ -151,7 +156,7 @@ class ApplicationConfig
     public function __construct($basePath)
     {
         $this->basePath = $basePath;
-        $this->params = new ParametersContainer;
+        $this->params = new ParametersContainer();
         self::$instance = $this;
     }
 
@@ -181,11 +186,13 @@ class ApplicationConfig
             $domain = $_SERVER['HTTP_HOST'];
             if ($this->checkPartnerName($domain)) {
                 $this->partnerName = $domain;
-            }
-            elseif ('staging' == $this->envName && isset(self::$customPartnerMapping[$domain]) && $this->checkPartnerName(self::$customPartnerMapping[$domain])) {
+            } elseif (
+                'staging' == $this->envName
+                && isset(self::$customPartnerMapping[$domain])
+                && $this->checkPartnerName(self::$customPartnerMapping[$domain])
+            ) {
                 $this->partnerName =  self::$customPartnerMapping[$domain];
-            }
-            elseif (defined('YII_DEBUG') && YII_DEBUG && $this->hasProperty('partnerName')) {
+            } elseif (defined('YII_DEBUG') && YII_DEBUG && $this->hasProperty('partnerName')) {
                 $partnerName = $this->property('partnerName');
 
                 if (!$this->checkPartnerName($partnerName)) {
@@ -196,7 +203,9 @@ class ApplicationConfig
         }
 
         if (!$this->partnerName) {
-            $this->partnerName = $this->hasProperty('defaultPartnerName') ? $this->property('defaultPartnerName') : reset(self::$validPartners);
+            $this->partnerName = $this->hasProperty('defaultPartnerName')
+                ? $this->property('defaultPartnerName')
+                : reset(self::$validPartners);
         }
         define('YOPOLIS_PARTNER', $this->partnerName);
 
@@ -250,7 +259,10 @@ class ApplicationConfig
                     )
                 );
                 if (!$param || !$value) {
-                    throw new ConfigError("/opt/environment.sh format must be 'key=value', 'export key=value', lines started with # are ignored");
+                    throw new ConfigError(
+                        // phpcs:ignore Generic.Files.LineLength
+                        "/opt/environment.sh format must be 'key=value', 'export key=value', lines started with # are ignored"
+                    );
                 }
                 $this->properties[$param] = $value;
             }
@@ -269,8 +281,7 @@ class ApplicationConfig
     {
         if (file_exists($propertiesFile = $this->getEnvPath("properties.local.php"))) {
             $this->properties = array_merge($this->properties, require $propertiesFile);
-        }
-        elseif (file_exists($propertiesFile = $this->getEnvPath("properties.php"))) {
+        } elseif (file_exists($propertiesFile = $this->getEnvPath("properties.php"))) {
             $this->properties = array_merge($this->properties, require $propertiesFile);
         }
 
@@ -305,9 +316,9 @@ class ApplicationConfig
         if (null === $propertyValue) {
             if (null !== $default) {
                 return $default;
-            }
-            else {
+            } else {
                 throw new ConfigError(
+                    // phpcs:ignore Generic.Files.LineLength
                     "Property $property is not defined properties.php, properties.local.php, /opt/environment.sh or environment variables"
                 );
             }
@@ -387,8 +398,10 @@ class ApplicationConfig
             if ($index < count($path)) {
                 $category = $path[$index];
             }
-        }
-        elseif (($index = array_search(self::SOURCE_ENV, $path)) || ($index = array_search(self::SOURCE_PARTNERS, $path))) {
+        } elseif (
+            ($index = array_search(self::SOURCE_ENV, $path))
+            || ($index = array_search(self::SOURCE_PARTNERS, $path))
+        ) {
             // это вариант env/dev/[components/]/db.php
             $source = $path[$index];
             $index += 2;    // пропускаем dev|prod|staging|yopolis.ru|...
@@ -445,7 +458,8 @@ class ApplicationConfig
 
     public function getPartnersPath($appendix = null)
     {
-        return join(DIRECTORY_SEPARATOR,
+        return join(
+            DIRECTORY_SEPARATOR,
             $appendix ?
                 [$this->basePath, self::SOURCE_PARTNERS, $this->partnerName, $appendix] :
                 [$this->basePath, self::SOURCE_PARTNERS, $this->partnerName]
@@ -481,326 +495,4 @@ class ApplicationConfig
         $filePath = join(DIRECTORY_SEPARATOR, $path) . '.php';
         return file_exists($filePath) ? new ConfigFile($filePath) : null;
     }
-
 }
-
-
-/**
- * Обёртка вокруг единичного конфиг-файла, возвращающего массив с параметрами
- */
-class ConfigFile
-{
-    use ParametersContainerTrait;
-
-    protected $params;
-
-
-    public function __construct($filePath)
-    {
-        $this->params = $this->load($filePath);
-    }
-
-    /**
-     * @param string $configPath
-     * @return null|ParametersContainer
-     */
-    protected function load($configPath)
-    {
-        $config = include $configPath;
-        return $config instanceof self ? $config->params :
-            new ParametersContainer(is_array($config) ? $config : null);
-    }
-
-}
-
-
-/**
- * Контейнер свойств конфига (как одного файла, так и всего приложения)
- */
-class ParametersContainer
-{
-    protected $params = [];
-
-    public function __construct($params = null)
-    {
-        if (is_array($params)) {
-            $this->params = $params;
-        }
-    }
-
-    /**
-     * Добавляет только новые параметры, если такой параметр уже есть - выбрасывает исключение
-     *
-     * @param array $params
-     * @throws ConfigError
-     */
-    public function append($params)
-    {
-        foreach ($params as $param => $value) {
-            if (isset($this->params[$param])) {
-                throw new ConfigError("Parameter $param is already defined in base configuration");
-            }
-            $this->params[$param] = $value;
-        }
-    }
-
-    /**
-     * Добавляет только новые параметры, если такой параметр уже есть - новое значение игнорируется
-     *
-     * @param array $params
-     * @throws ConfigError
-     */
-    public function appendOrIgnore($params)
-    {
-        foreach ($params as $param => $value) {
-            if (!isset($this->params[$param])) {
-                $this->params[$param] = $value;
-            }
-        }
-    }
-
-    /**
-     * Объединяет параметры конфигов рекурсивно, в случае совпадения ключей объединяет их в массив (array_merge_recursive)
-     *
-     * @param array $params
-     */
-    public function merge($params)
-    {
-        $this->params = array_merge_recursive($this->params, $params);
-    }
-
-    /**
-     * Объединяет параметры конфигов рекурсивно, в случае совпадения ключей новые значения перезаписывают старые (CMap::mergeArray)
-     *
-     * @param array $params
-     */
-    public function extend($params)
-    {
-        $this->params = self::mergeArray($this->params, $params);
-    }
-
-    /**
-     * Следует по вложенным ключам $path и заменяется последнее значение на $value
-     *
-     * Было:
-     * ['features' => [
-     *   'timeline' => ['__enabled', 'dashboard' => ['__enabled']]]
-     * ]
-     *
-     * replace(['features', 'timeline'], ['__disabled'])
-     *
-     * Стало:
-     * ['features' => ['timeline' => ['__disabled']]]
-     *
-     * @param array $path Вложенные ключи
-     * @param mixed $value Перезаписываемое значение
-     */
-    public function replace(array $path, $value)
-    {
-        $this->params = self::_replace($this->params, $path, $value);
-    }
-
-    protected static function _replace($params, $path, $value)
-    {
-        $param = array_shift($path);
-        if (empty($path)) {
-            $params[$param] = $value;
-        }
-        else {
-            $params[$param] = self::_replace($params[$param], $path, $value);
-        }
-        return $params;
-    }
-
-    /**
-     * Следует по вложенным ключам $path и удаляет последнее значение
-     *
-     * Было:
-     * ['services' => ['vontakte' => ..., 'facebook' => ...]]
-     *
-     * remove(['services', 'vkontakte'])
-     *
-     * Стало:
-     * ['services' => ['facebook' => ...]]
-     *
-     * @param array $path
-     */
-    public function remove(array $path)
-    {
-        $this->params = self::_remove($this->params, $path);
-    }
-
-    protected static function _remove($params, $path)
-    {
-        $key = array_shift($path);
-        if (!$path) {
-            unset($params[$key]);
-        }
-        else {
-            $params[$key] = self::_remove($params[$key], $path);
-        }
-        return $params;
-    }
-
-    /**
-     * Скопировано из CMap
-     * @param array $a
-     * @param array $b
-     * @return array|mixed
-     */
-    public static function mergeArray($a,$b)
-    {
-        $args=func_get_args();
-        $res=array_shift($args);
-        while(!empty($args))
-        {
-            $next=array_shift($args);
-            foreach($next as $k => $v)
-            {
-                if(is_integer($k))
-                    isset($res[$k]) ? $res[]=$v : $res[$k]=$v;
-                elseif(is_array($v) && isset($res[$k]) && is_array($res[$k]))
-                    $res[$k]=self::mergeArray($res[$k],$v);
-                else
-                    $res[$k]=$v;
-            }
-        }
-        return $res;
-    }
-
-    public function toArray()
-    {
-        return $this->params;
-    }
-
-}
-
-/**
- * Требования к классу-владельцу:
- * Содержит ParametersContainer $params
- *
- * @property ParametersContainer $params
- */
-trait ParametersContainerTrait
-{
-
-    /**
-     * Добавляет только новые параметры, если такой параметр уже есть - выбрасывает исключение
-     *
-     * @param array $params key => value
-     * @return $this
-     * @throws ConfigError
-     */
-    public function append($params)
-    {
-        $this->params->append(self::wrapArgs(func_get_args()));
-        return $this;
-    }
-
-    /**
-     * Добавляет только новые параметры, если такой параметр уже есть - новое значение игнорируется
-     *
-     * @param array $params key => value
-     * @return $this
-     * @throws ConfigError
-     */
-    public function appendOrIgnore($params)
-    {
-        $this->params->appendOrIgnore(self::wrapArgs(func_get_args()));
-        return $this;
-    }
-
-    /**
-     * Объединяет параметры конфигов рекурсивно, в случае совпадения ключей объединяет их в массив (array_merge_recursive)
-     *
-     * @param array $params key => value
-     * @return $this
-     */
-    public function merge($params)
-    {
-        $this->params->merge(self::wrapArgs(func_get_args()));
-        return $this;
-    }
-
-    /**
-     * Объединяет параметры конфигов рекурсивно, в случае совпадения ключей новые значения перезаписывают старые (CMap::mergeArray)
-     *
-     * @param array $params key => value
-     * @return $this
-     */
-    public function extend($params)
-    {
-        $this->params->extend(self::wrapArgs(func_get_args()));
-        return $this;
-    }
-
-    /**
-     * Следует по вложенным ключам $path и заменяется последнее значение на $value
-     *
-     * Было:
-     * ['features' => [
-     *   'timeline' => ['__enabled', 'dashboard' => ['__enabled']]]
-     * ]
-     *
-     * replace(['features', 'timeline'], ['__disabled'])
-     *
-     * Стало:
-     * ['features' => ['timeline' => ['__disabled']]]
-     *
-     * @param array $path Вложенные ключи
-     * @param mixed $value Перезаписываемое значение
-     * @return $this
-     */
-    public function replace($path, $value)
-    {
-        $this->params->replace($path, $value);
-        return $this;
-    }
-
-    /**
-     * Следует по вложенным ключам $path и удаляет последнее значение
-     *
-     * Было:
-     * ['services' => ['vontakte' => ..., 'facebook' => ...]]
-     *
-     * remove(['services', 'vkontakte'])
-     *
-     * Стало:
-     * ['services' => ['facebook' => ...]]
-     *
-     * @param array $path
-     * @return $this
-     */
-    public function remove($path)
-    {
-        $this->params->remove($path);
-        return $this;
-    }
-
-    /**
-     * @return array
-     */
-    public function toArray()
-    {
-        return $this->params->toArray();
-    }
-
-    protected static function wrapArgs($args)
-    {
-        if (2 == count($args)) {
-            list($param, $value) = $args;
-            if ($value instanceof ConfigFile) {
-                $value = $value->toArray();
-            }
-            return [$param => $value];
-        }
-        else {
-            return $args[0];
-        }
-    }
-
-}
-
-
-class ConfigError extends \Exception
-{}

@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\exceptions;
 
 use yii\web\HttpException;
@@ -84,5 +85,4 @@ class AjaxException extends HttpException
         ]);
         return array_shift($variants);
     }
-
 }

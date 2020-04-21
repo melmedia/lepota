@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\data;
 
 use Exception;
@@ -29,7 +30,7 @@ class BulkMeta
 
     public function meta($item): stdClass
     {
-        return $this->meta[$this->itemId($item)] ?? new stdClass;
+        return $this->meta[$this->itemId($item)] ?? new stdClass();
     }
 
     public function filterAttr(array $mapping): self
@@ -77,12 +78,16 @@ class BulkMeta
         $resultData = $bulkCallback(
             Functional\unique(
                 array_filter(
-                    Functional\map($this->collection, function ($item) use ($fromAttribute) { return self::objectKey($item, $fromAttribute, false); })
+                    Functional\map($this->collection, function ($item) use ($fromAttribute) {
+                        return self::objectKey($item, $fromAttribute, false);
+                    })
                 )
             )
         );
         $resultData = array_combine(
-            Functional\map($resultData, function ($item) use ($indexAttribute) { return self::objectKey($item, $indexAttribute, true); }),
+            Functional\map($resultData, function ($item) use ($indexAttribute) {
+                return self::objectKey($item, $indexAttribute, true);
+            }),
             $resultData
         );
 
@@ -93,7 +98,7 @@ class BulkMeta
                 continue;
             }
             if (!isset($this->meta[$itemId])) {
-                $this->meta[$itemId] = new stdClass;
+                $this->meta[$itemId] = new stdClass();
             }
             $this->meta[$itemId]->$toAttribute = $resultData[$fromAttributeValue];
         }
@@ -126,7 +131,9 @@ class BulkMeta
             case is_array($keyAttr):
                 $key = Functional\map(
                     $keyAttr,
-                    function (string $keyAttrItem) use ($object) { return $object->{$keyAttrItem}; }
+                    function (string $keyAttrItem) use ($object) {
+                        return $object->{$keyAttrItem};
+                    }
                 );
                 if ($isReturnString) {
                     $key = join(' ', $key);
@@ -143,5 +150,4 @@ class BulkMeta
 
         return $key;
     }
-
 }

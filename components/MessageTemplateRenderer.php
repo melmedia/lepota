@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components;
 
 use Yii;
@@ -20,5 +21,4 @@ class MessageTemplateRenderer extends Component
             ? $this->frontendClient->post("backend/email/{$templateName}", $params)
             : $this->frontendClient->get("backend/email/{$templateName}", $params);
     }
-
 }

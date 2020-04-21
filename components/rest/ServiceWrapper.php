@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components\rest;
 
 use Exception;
@@ -87,5 +88,4 @@ class ServiceWrapper extends Component
         }
         return $this->restClient->get($url, $isUseBody ? [] : $params, $isUseBody ? $params : null);
     }
-
 }

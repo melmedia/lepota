@@ -1,9 +1,12 @@
 <?php
+
 namespace lepota\components\filters;
 
 use Yii;
-use yii\base\{ActionEvent, Behavior};
-use yii\web\{Controller, ForbiddenHttpException};
+use yii\base\ActionEvent;
+use yii\base\Behavior;
+use yii\web\Controller;
+use yii\web\ForbiddenHttpException;
 
 class DomainFilter extends Behavior
 {
@@ -27,7 +30,7 @@ class DomainFilter extends Behavior
     {
         if (strpos(Yii::$app->request->hostInfo, 'http://' . $this->deny) !== false) {
             $event->isValid = false;
-            throw new ForbiddenHttpException;
+            throw new ForbiddenHttpException();
         }
 
         return $event->isValid;

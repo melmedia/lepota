@@ -1,11 +1,11 @@
 <?php
+
 namespace lepota\domain;
 
 use Functional;
 
 class EntitySearch
 {
-
     protected function getCkeditorContentIndex($content)
     {
         if (!$content) {
@@ -18,21 +18,21 @@ class EntitySearch
             }),
             function (array $contentBlock, $index, $collection, string $reduction = null) {
                 return $reduction . ' ' . Functional\reduce_left(
-                        $contentBlock['content'],
-                        function (array $contentBlockItem, $index, $collection, string $reduction = null) {
-                            switch ($contentBlockItem['type']) {
-                                case 'text':
-                                    $reduction .= ' ' . self::html2text($contentBlockItem['content']);
-                                    break;
+                    $contentBlock['content'],
+                    function (array $contentBlockItem, $index, $collection, string $reduction = null) {
+                        switch ($contentBlockItem['type']) {
+                            case 'text':
+                                $reduction .= ' ' . self::html2text($contentBlockItem['content']);
+                                break;
 
-                                case 'image':
-                                    $reduction .= ' ' . self::html2text($contentBlockItem['content']['caption']);
-                                    break;
-                            }
-
-                            return $reduction;
+                            case 'image':
+                                $reduction .= ' ' . self::html2text($contentBlockItem['content']['caption']);
+                                break;
                         }
-                    );
+
+                        return $reduction;
+                    }
+                );
             }
         );
     }
@@ -41,5 +41,4 @@ class EntitySearch
     {
         return html_entity_decode(strip_tags($html), ENT_QUOTES);
     }
-
 }

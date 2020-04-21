@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components\rest;
 
 use Exception;
@@ -38,5 +39,4 @@ class JsonServiceDiscovery extends Component implements ServiceDiscoveryInterfac
         }
         return $this->config[$serviceName];
     }
-
 }

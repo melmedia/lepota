@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components\rest;
 
 /**
@@ -6,11 +7,9 @@ namespace lepota\components\rest;
  */
 interface ServiceDiscoveryInterface
 {
-
     /**
      * @param string $serviceName
      * @return string|null
      */
     public function getLocation(string $serviceName);
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain;
 
 use yii\db\ActiveRecord;
@@ -35,5 +36,4 @@ class StorageSpecification
         $this->saveAfter += $specification->saveAfter;
         $this->deleteAfter += $specification->deleteAfter;
     }
-
 }

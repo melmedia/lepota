@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\domain;
 
 /**
@@ -6,18 +7,16 @@ namespace lepota\domain;
  */
 interface DomainModel
 {
-
     /**
      * @param array $values
      * @param bool $safeOnly
      */
-    function setAttributes($values, $safeOnly = true);
+    public function setAttributes($values, $safeOnly = true);
 
     /**
      * @param array|null $names
      * @param array $except
      * @return array
      */
-    function getAttributes($names = null, $except = []);
-
+    public function getAttributes($names = null, $except = []);
 }

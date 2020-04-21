@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\misc;
 
 /**
@@ -7,11 +8,11 @@ namespace lepota\misc;
 class GenerateId
 {
     /** Letters to generate ID from */
-    const LOWER_LETTERS = "abcdefghijklmnopqrstuvwxyz";
+    public const LOWER_LETTERS = "abcdefghijklmnopqrstuvwxyz";
     /** Letters to generate ID from */
-    const CAPITAL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    public const CAPITAL_LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     /** Letters to generate ID from */
-    const DIGITS = "1234567890";
+    public const DIGITS = "1234567890";
 
     public static function letters($length)
     {
@@ -45,5 +46,4 @@ class GenerateId
         }
         return substr(str_shuffle($symbols), 0, $length);
     }
-
 }

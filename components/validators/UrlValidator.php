@@ -1,4 +1,5 @@
 <?php
+
 namespace lepota\components\validators;
 
 use Yii;
@@ -22,5 +23,4 @@ class UrlValidator extends \yii\validators\UrlValidator
         }
         return null;
     }
-
 }
