@@ -27,8 +27,8 @@ class EntityStorageException extends AjaxException
                 $this->isDuplicatedKey = true;
                 if (isset($dbException->errorInfo[2])) {
                     preg_match('~(constraint|ограничение уникальности) "([^"]+)"~', $dbException->errorInfo[2], $matches);
-                    if (isset($matches[1])) {
-                        $this->constraint = $matches[1];
+                    if (isset($matches[2])) {
+                        $this->constraint = $matches[2];
                     }
                 }
             }
