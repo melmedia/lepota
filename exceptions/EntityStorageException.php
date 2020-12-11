@@ -26,7 +26,7 @@ class EntityStorageException extends AjaxException
                 // SQLSTATE[23505]: Unique violation: ERROR: duplicate key value violates unique constraint
                 $this->isDuplicatedKey = true;
                 if (isset($dbException->errorInfo[2])) {
-                    preg_match('~constraint "([^"]+)"~', $dbException->errorInfo[2], $matches);
+                    preg_match('~(constraint|ограничение уникальности) "([^"]+)"~', $dbException->errorInfo[2], $matches);
                     if (isset($matches[1])) {
                         $this->constraint = $matches[1];
                     }
