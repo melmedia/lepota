@@ -46,6 +46,19 @@ class TagList
     }
 
     /**
+     * Create from array of hashes (from http request) consists only of id attribute
+     * @param array $tags [[id => number], ...]
+     * @return TagList
+     */
+    public static function createFromArrayOfIds($tags)
+    {
+        return new self(
+            Functional\pluck($tags, "id"),
+            null
+        );
+    }
+
+    /**
      * Create from array of hashes (from http request)
      * @param array $tags
      * @return TagList
